@@ -18,7 +18,7 @@ import WritingPost from './components/channel/PostSubmission'
 import SinglePostView from './components/channel/SinglePostView'
 import EditPost from './components/channel/EditPost.vue'
 
-import SearchLayout from './components/search/SearchLayout.vue'
+import SearchResult from './components/search/SearchResult.vue'
 
 
 Vue.use(Router);
@@ -79,9 +79,9 @@ export default new Router({
                             component: CreateChannel,
                         },
                         {
-                            name:'SearchLayout',
+                            name:'SearchResult',
                             path: '/search',
-                            component: SearchLayout,
+                            component: SearchResult,
                         }
                     ]// HomeLayout Children
                 },// HomeLayout

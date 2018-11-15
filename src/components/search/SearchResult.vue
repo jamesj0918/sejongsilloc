@@ -37,24 +37,7 @@
                         </div>
                     </li>
                 </ul>
-
-
             </div>
-            <!--
-            <div id="resultUser">
-                <div id="resultUserTitle">사용자</div>
-                <div class="resultUserItem">
-                    <div class="channelImgWrap"><img class="channelImg" src="https://placehold.it/60x60"/></div>
-                    <div class="userInfoWrap">
-                        <div class="userName">{{user.name}}</div>
-                        <div class="userInfo">
-                            <span class="following">{{user.following}} 팔로잉 </span>
-                            <span class="follower">· {{user.follower}} 팔로워</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            -->
         </div>
     </div>
 </template>
