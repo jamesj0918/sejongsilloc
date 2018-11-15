@@ -1,11 +1,10 @@
 <template>
-    <div id="SinglePostViewWrapper">
+    <div id="SinglePostView">
         <div id="SinglePostViewWrap">
             <post-article></post-article>
             <post-comment></post-comment>
         </div>
     </div>
-
 </template>
 
 <script>
@@ -27,8 +26,8 @@
         font-family: "Noto Sans KR";
     }
 
-    #SinglePostViewWrapper{
-        height: 91vh;
+    #SinglePostView {
+        width: 100%; height: 91vh;
         overflow-y: scroll;
     }
 
