@@ -20,15 +20,15 @@
                             </a>
                             </li>
                             <li class="dropdownMenuItem"><a style="cursor:pointer">
-                                <div class="dropdownMenuLink" @click="toEdit()"><i class="edit icon"></i><span>수정</span></div>
+                                <div class="dropdownMenuLink" @click="toEdit()" v-if="post.author.id == user_pk"><i class="edit icon"></i><span>수정</span></div>
                             </a>
                             </li>
                             <li class="dropdownMenuItem"><a style="cursor:pointer" @click="deleteArticle()">
-                                <div class="dropdownMenuLink"><i class="trash alternate icon"></i><span>삭제</span></div>
+                                <div class="dropdownMenuLink" v-if="post.author.id == user_pk"><i class="trash alternate icon" ></i><span>삭제</span></div>
                             </a>
                             </li>
-                            <li class="dropdownMenuItem"><a style="cursor:pointer">
-                                <div class="dropdownMenuLink" @click="pinPost" v-if="!isPinned"><i class="thumbtack icon" ></i><span>공지 띄우기</span></div>
+                            <li class="dropdownMenuItem" v-if="is_moderator"><a style="cursor:pointer">
+                                <div class="dropdownMenuLink" @click="pinPost" v-if="!isPinned" ><i class="thumbtack icon" ></i><span>공지 띄우기</span></div>
                                 <div class="dropdownMenuLink" @click="pinPost" v-else><i class="thumbtack icon" ></i><span>공지 취소하기</span></div>
 
                             </a>
@@ -86,6 +86,7 @@
                 downVoted: false,
                 downCount: 0,
                 isPinned: false,
+                is_moderator: false,
                 submission_date: [],
                 submission_time: []
             }
@@ -103,6 +104,14 @@
                     this.submission_time = response.data.created_at.split('T')[1].split('.')[0];
                     this.upCount = response.data.likes_count;
                     this.downCount = response.data.dislikes_count;
+                    console.log(response.data.channel.moderators)
+
+                    for(var i=0;i<response.data.channel.moderators.length;i++){
+                        if(response.data.channel.moderators[i] == this.user_pk){
+                            this.is_moderator = true;
+                            break;
+                        }
+                    }
 
                     for(var i=0; i<response.data.likes_count; i++){
                         if(response.data.likes[i].id == this.user_pk){
