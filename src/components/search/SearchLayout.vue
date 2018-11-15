@@ -7,28 +7,40 @@
             </div>
             <div id="resultChannel">
                 <div id="resultChannelTitle">실록</div>
-                <div class="resultChannelItem">
-                    <div class="channelImgWrap"><img class="channelImg" src="https://placehold.it/60x60" /></div>
-                    <div class="channelInfo">
-                        <div class="channelName">#{{channel.name}}</div>
-                        <div class="channelDescription">{{channel.description}}</div>
-                    </div>
-                </div>
+                <ul>
+                    <li v-for="(channel, channel_id) in channels">
+                        <div class="resultChannelItem">
+                            <div class="channelImgWrap"><img class="channelImg" src="https://placehold.it/60x60" /></div>
+                            <div class="channelInfo">
+                                <div class="channelName" @click="gotoChannel(channel.slug)">#{{channel.name}}</div>
+                                <div class="channelDescription">{{channel.description}}</div>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+
             </div>
             <div id="resultPost">
                 <div id="resultPostTitle">게시물</div>
-                <div class="resultPostItem">
-                    <div class="postTop">
-                        <div class="userImgWrap"><img class="userImg" src="https://placehold.it/60x60"/></div>
-                        <div class="postInfo">
-                            <div class="postWriterName">{{post.writer.username}}</div>
-                            <div class="date">{{post.date}}</div>
-                            <div class="postChannelName">#{{post.name}}</div>
+                <ul>
+                    <li v-for="(post, post_id) in posts">
+                        <div class="resultPostItem">
+                            <div class="postTop">
+                                <div class="userImgWrap"><img class="userImg" src="https://placehold.it/60x60"/></div>
+                                <div class="postInfo">
+                                    <div class="postWriterName" >{{post.author.username}}</div>
+                                    <div class="date">{{post.created_at}}</div>
+                                    <div class="postChannelName">#{{post.channel.name}}</div>
+                                </div>
+                            </div>
+                            <div class="postTitle" @click="gotoPost(post.channel.slug, post.id)">{{post.title}}</div>
                         </div>
-                    </div>
-                    <div class="postTitle">{{post.title}}</div>
-                </div>
+                    </li>
+                </ul>
+
+
             </div>
+            <!--
             <div id="resultUser">
                 <div id="resultUserTitle">사용자</div>
                 <div class="resultUserItem">
@@ -42,35 +54,44 @@
                     </div>
                 </div>
             </div>
+            -->
         </div>
     </div>
 </template>
 
 <script>
+    import axios from 'axios'
     export default {
         name: "SearchLayout",
         data(){
             return {
                 search_data : this.$route.query.search_data,
-                channel: {
-                    name: '화양리 맛집',
-                    description: '화양리 맛집 추천 및 후기 가득! 구독구독미~'
-                },
-                post: {
-                    writer:{
-                        username: 'squeen'
-                    },
-                    date: '2018.11.15',
-                    name: '맛집놀거리',
-                    title: '학교 주변에 데이트 할만한 맛집이나 장소 있나요?!'
-                },
-                user: {
-                    name: '맛집만보면짓는개',
-                    following: 0,
-                    follower: 132
-                }
+                channels: [],
+                posts: [],
             }
         },
+        mounted(){
+            axios.get('channel/?search='+this.search_data)
+                .then((response)=>{
+                    console.log("channel",response);
+                    this.channels=response.data;
+                });
+
+            axios.get('post/?search='+this.search_data)
+                .then((response)=>{
+                    console.log("post",response.data);
+                    this.posts = response.data;
+                });
+
+        },
+        methods:{
+            gotoChannel(channel_slug){
+                this.$router.push('/'+channel_slug);
+            },
+            gotoPost(channel_slug, post_pk){
+                this.$router.push('/'+channel_slug+'/'+post_pk);
+            }
+        }
     }
 </script>
 
@@ -163,6 +184,7 @@
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
+        cursor: pointer;
     }
 
     .channelDescription {
@@ -262,6 +284,7 @@
         padding: 5px 15px;
         font-size: 13px;
         font-weight: bold;
+        cursor: pointer;
     }
 
     #resultUser {

@@ -1,7 +1,10 @@
 <template>
-    <div id="HomeLayoutWrap">
-        <router-view></router-view>
+    <div id="HomeLayoutWrapper">
+        <div id="HomeLayoutWrap">
+            <router-view></router-view>
+        </div>
     </div>
+
 </template>
 
 <script>
@@ -18,7 +21,10 @@
 
 <style scoped>
     #HomeLayoutWrap {
-        width: 100%; height: 91vh;
+        width: 100%; height: auto;
+    }
 
+    #HomeLayoutWrapper{
+        height: 91vh; overflow-y: scroll;
     }
 </style>
