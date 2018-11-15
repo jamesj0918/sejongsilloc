@@ -69,7 +69,6 @@
         mounted() {
             axios.get('post/'+this.postID+'/')
                 .then((response) => {
-                    console.log(response);
                     this.Post.title = response.data.title;
                     this.Post.content = response.data.content;
                     this.Post.is_pinned = response.data.pinned;

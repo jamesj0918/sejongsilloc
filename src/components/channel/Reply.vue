@@ -1,8 +1,8 @@
 <template>
     <div id="ReplyWrap">
         <div id="showButton" >
-            <a class="replyButton" @click="showReply()" v-if="hide===false">답글 보기</a>
-            <a class="replyButton" @click="showReply()" v-else>답글 숨기기</a>
+            <a class="replyButton" style="cursor:pointer" @click="showReply()" v-if="hide===false">답글 보기</a>
+            <a class="replyButton" style="cursor:pointer" @click="showReply()" v-else>답글 숨기기</a>
         </div>
         <div id="reply" v-if="hide===true">
                 <ul>

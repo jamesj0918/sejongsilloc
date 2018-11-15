@@ -106,10 +106,8 @@
         mounted(){
             axios.get('post/')
                 .then((response)=> {
-                    console.log("hi",response);
                     if(response.data.length == 0) return;
                     this.empty = false;
-
                     for(var i = 0;i<response.data.length;i++){
                         if(this.channel_id == response.data[i].channel.slug){
                             if(response.data[i].pinned == true){
@@ -134,12 +132,17 @@
         font-family: "Noto Sans KR";
     }
 
+    ul {
+        list-style: none;
+    }
+
     button:focus {
         outline: none;
     }
 
     #ChannelWrap {
-        width: 100%; height: 100%;
+        width: 100%; height: 97vh;
+        overflow: scroll;
     }
 
     #top {
@@ -221,5 +224,9 @@
     .postMenu {
         font-size: 12px;
         color: rgba(89, 89, 89, 0.8);
+    }
+    #noArticle {
+        text-align: center;
+        margin-top: 10px;
     }
 </style>

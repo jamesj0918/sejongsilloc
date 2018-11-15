@@ -1,24 +1,26 @@
 <template>
-    <div id="SubscriptionListWrapper">
-        <div id="pageTitle"><h3>나의 구독 채널 보기</h3></div>
-        <div id="subscriptionListWrap">
-            <ul>
-                <li v-for="(channel, id) in channel_list">
-                    <div id="singleChannel">
-                        <div id="channelImgWrapper">
-                            <img id="channelImg" src="https://placehold.it/60x60">
+    <div id="SubscriptionList">
+        <div id="SubscriptionListWrapper">
+            <div id="pageTitle"><h3>나의 구독 채널 보기</h3></div>
+            <div id="subscriptionListWrap">
+                <ul>
+                    <li v-for="(channel, id) in channel_list">
+                        <div id="singleChannel">
+                            <div id="channelImgWrapper">
+                                <img id="channelImg" src="https://placehold.it/60x60">
+                            </div>
+                            <div id="channelData">
+                                <div id="channelName" @click="enterChannel(channel.slug)">#{{channel.name}}</div>
+                                <div id="channelNameMobile" @click="enterChannel(channel.slug)">{{channel.name}}</div>
+                                <div id="channelDescription">{{channel.description}}</div>
+                            </div>
+                            <div id="subscriptionBtnWrapper">
+                                <div id="subscriptionBtn">구독취소</div>
+                            </div>
                         </div>
-                        <div id="channelData">
-                            <div id="channelName" @click="enterChannel(channel.slug)">#{{channel.name}}</div>
-                            <div id="channelNameMobile" @click="enterChannel(channel.slug)">{{channel.name}}</div>
-                            <div id="channelDescription">{{channel.description}}</div>
-                        </div>
-                        <div id="subscriptionBtnWrapper">
-                            <div id="subscriptionBtn">구독취소</div>
-                        </div>
-                    </div>
-                </li>
-            </ul>
+                    </li>
+                </ul>
+            </div>
         </div>
     </div>
 </template>
@@ -59,9 +61,12 @@
     li {
         list-style: none;
     }
-
+    #SubscriptionList {
+        width: 100%; height: 91vh;
+        overflow-y: scroll;
+    }
     #SubscriptionListWrapper {
-        height: 91vh;
+        height: auto;
         overflow-y: scroll;
         width: 97%;
         margin: 0 auto;
@@ -69,14 +74,13 @@
         margin-top: 2%;
         background-color: white;
         border-radius: 10px;
-        height: auto;
     }
 
     ::-webkit-scrollbar{
-        width: 7px;
+        width: 5px !important;
     }
     ::-webkit-scrollbar-track {
-        background-color: #f8f8f8;
+        background-color: #f8f8f8 !important;
     }
     ::-webkit-scrollbar-thumb {
         background-color: lightgray;
