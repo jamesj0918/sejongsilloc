@@ -7,36 +7,46 @@
             </div>
             <div id="resultChannel">
                 <div id="resultChannelTitle">실록</div>
-                <ul>
-                    <li v-for="(channel, channel_id) in channels">
-                        <div class="resultChannelItem">
-                            <div class="channelImgWrap"><img class="channelImg" src="https://placehold.it/60x60" /></div>
-                            <div class="channelInfo">
-                                <div class="channelName" @click="gotoChannel(channel.slug)">#{{channel.name}}</div>
-                                <div class="channelDescription">{{channel.description}}</div>
+                <div v-if="channels.length === 0" class="nullContent">
+                    <h3>검색결과가 존재하지 않습니다.</h3>
+                </div>
+                <div v-else>
+                    <ul>
+                        <li v-for="(channel, channel_id) in channels">
+                            <div class="resultChannelItem">
+                                <div class="channelImgWrap"><img class="channelImg" src="https://placehold.it/60x60" /></div>
+                                <div class="channelInfo">
+                                    <div class="channelName" @click="gotoChannel(channel.slug)">#{{channel.name}}</div>
+                                    <div class="channelDescription">{{channel.description}}</div>
+                                </div>
                             </div>
-                        </div>
-                    </li>
-                </ul>
-
+                        </li>
+                    </ul>
+                </div>
             </div>
             <div id="resultPost">
                 <div id="resultPostTitle">게시물</div>
-                <ul>
-                    <li v-for="(post, post_id) in posts">
-                        <div class="resultPostItem">
-                            <div class="postTop">
-                                <div class="userImgWrap"><img class="userImg" src="https://placehold.it/60x60"/></div>
-                                <div class="postInfo">
-                                    <div class="postWriterName" >{{post.author.username}}</div>
-                                    <div class="date">{{post.created_at}}</div>
-                                    <div class="postChannelName">#{{post.channel.name}}</div>
+                <div v-if="posts.length === 0" class="nullContent">
+                    <h4>검색결과가 존재하지 않습니다.</h4>
+                </div>
+                <div v-else>
+                    <ul>
+                        <li v-for="(post, post_id) in posts">
+                            <div class="resultPostItem">
+                                <div class="postTop">
+                                    <div class="userImgWrap"><img class="userImg" src="https://placehold.it/60x60"/></div>
+                                    <div class="postInfo">
+                                        <div class="postWriterName" >{{post.author.username}}</div>
+                                        <div class="date">{{post.created_at}}</div>
+                                        <div class="postChannelName">#{{post.channel.name}}</div>
+                                    </div>
                                 </div>
+                                <div class="postTitle" @click="gotoPost(post.channel.slug, post.id)">{{post.title}}</div>
                             </div>
-                            <div class="postTitle" @click="gotoPost(post.channel.slug, post.id)">{{post.title}}</div>
-                        </div>
-                    </li>
-                </ul>
+                        </li>
+                    </ul>
+                </div>
+
             </div>
         </div>
     </div>
@@ -56,13 +66,11 @@
         mounted(){
             axios.get('channel/?search='+this.search_data)
                 .then((response)=>{
-                    console.log("channel",response);
                     this.channels=response.data;
                 });
 
             axios.get('post/?search='+this.search_data)
                 .then((response)=>{
-                    console.log("post",response.data);
                     this.posts = response.data;
                 });
 
@@ -89,6 +97,11 @@
         list-style: none;
     }
 
+    .nullContent{
+        margin-left: 5%;
+        margin-top: 5px;
+        margin-bottom: 5px;
+    }
     #SearchLayout {
         width: 100%; height: 97vh;
         overflow-y: scroll;
