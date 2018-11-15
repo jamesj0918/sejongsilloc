@@ -27,7 +27,7 @@ if (localStorage.getItem("token")){
             axios.defaults.headers.common = {
                 "Content-Type": "application/json",
                 "Authorization": "JWT " + localStorage.getItem("token")
-            }
+            };
         })
         .catch(() => {
             localStorage.removeItem("token");

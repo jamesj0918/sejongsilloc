@@ -89,6 +89,7 @@ export default new Router({
                     name: 'ChannelLayout',
                     path: ':channelID',
                     component:ChannelLayout,
+
                     children:[
                         {
                             name: 'Channel',
