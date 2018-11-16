@@ -41,11 +41,9 @@
             },
         },
         mounted(){
-            axios.get('channel/')
+            axios.get('channel/?subscribed=1')
                 .then((response)=>{
-
                     this.channel_list = response.data;
-
                 })
         }
     }

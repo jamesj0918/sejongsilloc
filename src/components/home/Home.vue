@@ -62,19 +62,14 @@
             }
         },
         mounted(){
-            axios.get('post/?subscribed=1/')
+            axios.get('post/?subscribed=1')
                 .then((response)=> {
                     if(response.data.length == 0) return;
                     this.empty = false;
 
-                    for(var i = 0;i<response.data.length;i++){
-
-
-                                this.posts.push(response.data[i]);
-
-
+                    for(let i = 0;i<response.data.length;i++){
+                        this.posts.push(response.data[i]);
                     }
-
                 })
         }
     }
