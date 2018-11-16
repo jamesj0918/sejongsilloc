@@ -104,7 +104,6 @@
                     this.submission_time = response.data.created_at.split('T')[1].split('.')[0];
                     this.upCount = response.data.likes_count;
                     this.downCount = response.data.dislikes_count;
-                    console.log(response.data.channel.moderators)
 
                     for(var i=0;i<response.data.channel.moderators.length;i++){
                         if(response.data.channel.moderators[i] == this.user_pk){

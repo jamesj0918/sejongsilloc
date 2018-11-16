@@ -8,7 +8,7 @@
             <div id="resultChannel">
                 <div id="resultChannelTitle">실록</div>
                 <div v-if="channels.length === 0" class="nullContent">
-                    <h3>검색결과가 존재하지 않습니다.</h3>
+                    <h4>검색결과가 존재하지 않습니다.</h4>
                 </div>
                 <div v-else>
                     <ul>
