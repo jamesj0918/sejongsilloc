@@ -1,68 +1,68 @@
-<!--리펙토링 필수-->
-
 <template lang="html">
-    <div id="CreateChannelWrapper">
-         <div id="pageTitle"><h3>새로운 실록 만들기</h3></div>
-        <div id="createChannelWrap">
-            <div id="channelName">
-                <div class="contentTitle"><h4>실록 이름</h4></div>
-                <input id="inputName" name="user.name" v-model="user.name" placeholder="이름을 입력하세요." />
-            </div>
-            <div id="channelImg">
-                <div class="contentTitle"><h4>프로필 및 배경 사진</h4></div>
-                <div id="channelImgContent">
-                    <div id="divLeft">
-                        <div id="bannerImgWrap"></div>
-                        <div id="profileWrap">
-                            <div id="profileImgWrap">
-                                <img src="" id="profileImg"/>
+    <div id="CreateChannel">
+        <div id="CreateChannelWrap">
+            <div id="pageTitle"><h3>새로운 실록 만들기</h3></div>
+            <div id="createChannelWrap">
+                <div id="channelName">
+                    <div class="contentTitle"><h4>실록 이름</h4></div>
+                    <input id="inputName" name="user.name" v-model="user.name" placeholder="이름을 입력하세요." style="cursor: text"/>
+                </div>
+                <div id="channelImg">
+                    <div class="contentTitle"><h4>프로필 및 배경 사진</h4></div>
+                    <div id="channelImgContent">
+                        <div id="divLeft">
+                            <div id="bannerImgWrap"></div>
+                            <div id="profileWrap">
+                                <div id="profileImgWrap">
+                                    <img src="" id="profileImg"/>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="divRight">
+                            <div id="selectBanner">
+                                <div class="contentSubTitle"><h5>배경 사진 불러오기</h5></div>
+                                <input id="inputBanner" type="profileImage" placeholder="사진을 불러오세요." style="cursor: text">
+                                <div class="imgSubmit"><a style="cursor: pointer">업로드</a></div>
+                            </div>
+                            <div id="selectProfile">
+                               <div class="contentSubTitle"><h5>프로필 사진 불러오기</h5></div>
+                                <input id="inputProfile" type="profileImage" placeholder="사진을 불러오세요." style="cursor: text">
+                                <div class="imgSubmit"><a style="cursor: pointer">업로드</a></div>
                             </div>
                         </div>
                     </div>
-                    <div id="divRight">
-                        <div id="selectBanner">
-                            <div class="contentSubTitle"><h5>배경 사진 불러오기</h5></div>
-                            <input id="inputBanner" type="profileImage" placeholder="사진을 불러오세요.">
-                            <div class="imgSubmit"><a style="cursor: pointer">업로드</a></div>
-                        </div>
-                        <div id="selectProfile">
-                           <div class="contentSubTitle"><h5>프로필 사진 불러오기</h5></div>
-                            <input id="inputProfile" type="profileImage" placeholder="사진을 불러오세요.">
-                            <div class="imgSubmit"><a style="cursor: pointer">업로드</a></div>
-                        </div>
-                    </div>
                 </div>
+                <div id="channelDescription">
+                    <div class="contentTitle"><h4>실록 설명</h4></div>
+                    <input id="inputChannelDescription" name="user.description" v-model="user.description" placeholder="설명을 입력하세요." style="cursor: text"/>
+                </div>
+                <div id="channelDomain">
+                    <div class="contentTitle" id="domainTitle"><h4>실록 도메인</h4></div>
+                    <span id="fixedDomain">https://www.sejongsilloc.com/</span>
+                    <input id="inputDomain" name="user.domain" v-model="user.domain" placeholder="영소문자 및 숫자 조합 ex)se1jong" style="cursor: text"/>
+                </div>
+                <div id="channelRule">
+                    <div class="contentTitle" id="ruleTitle"><h4>실록 규칙</h4></div>
+                    <table id="ruleTable">
+                        <thead>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr v-for="(rule, id) in user.rules">
+                            <td id="inputRuleWrap"><input id="inputRule" type="text" v-model="rule.value" placeholder="규칙을 입력해주세요." style="cursor: text"></td>
+                            <td id="deleteBtnWrap">
+                                <div id="deleteBtn"><a id="btnInner" @click="removeElement(id)" style="cursor: pointer">삭제</a></div>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <div id="addBtn" v-if="this.user.rules.length!==5"><a @click="addRow" style="cursor: pointer">추가</a></div>
+                </div>
+                <div id="channelCreateBtnWrap"><button id="channelCreateBtn" type="button" @click="create" style="cursor: pointer">실록 생성</button></div>
             </div>
-            <div id="channelDescription">
-                <div class="contentTitle"><h4>실록 설명</h4></div>
-                <input id="inputChannelDescription" name="user.description" v-model="user.description" placeholder="설명을 입력하세요."/>
-            </div>
-            <div id="channelDomain">
-                <div class="contentTitle" id="domainTitle"><h4>실록 도메인</h4></div>
-                <span id="fixedDomain">https://www.sejongsilloc.com/</span>
-                <input id="inputDomain" name="user.domain" v-model="user.domain" placeholder="영소문자 및 숫자 조합 ex)se1jong" />
-            </div>
-            <div id="channelRule">
-                <div class="contentTitle" id="ruleTitle"><h4>실록 규칙</h4></div>
-                <table id="ruleTable">
-                    <thead>
-                    <tr>
-                        <td></td>
-                        <td></td>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr v-for="(rule, id) in user.rules">
-                        <td id="inputRuleWrap"><input id="inputRule" type="text" v-model="rule.value" placeholder="규칙을 입력해주세요."></td>
-                        <td id="deleteBtnWrap">
-                            <div id="deleteBtn"><a id="btnInner" @click="removeElement(id)" style="cursor: pointer">삭제</a></div>
-                        </td>
-                    </tr>
-                    </tbody>
-                </table>
-                <div id="addBtn"><a @click="addRow" style="cursor: pointer">추가</a></div>
-            </div>
-            <div id="channelCreateBtnWrap"><button id="channelCreateBtn" type="button" @click="create" style="cursor: pointer">실록 생성</button></div>
         </div>
     </div>
 </template>
@@ -126,6 +126,7 @@
     *{
         margin: 0;
         padding: 0;
+        cursor: default;
         font-family: "Noto Sans KR";
     }
 
@@ -172,7 +173,12 @@
         color: rgba(169, 169, 169, 0.6);
     }
 
-    #CreateChannelWrapper {
+    #CreateChannel {
+        width: 100%; height: 92vh;
+        overflow-y: scroll;
+    }
+
+    #CreateChannelWrap {
         width: 97%; height: auto;
         margin: 0 auto;
         padding: 3% 3%;
@@ -359,9 +365,9 @@
     }
 
     #channelCreateBtn {
-        width: 84px;
+        width: 90px;
         margin-left: calc(100% - 84px);
-        padding: 1.8% 3%;
+        padding: 1.8% 2%;
         background-color: #8c151f;
         color: white;
         border:none;
