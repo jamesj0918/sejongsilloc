@@ -2,7 +2,7 @@
     <div id="CreateChannel">
         <div id="CreateChannelWrap">
             <div id="pageTitle"><h3>새로운 실록 만들기</h3></div>
-            <div id="createChannelWrap">
+            <div id="createChannelContent">
                 <div id="channelName">
                     <div class="contentTitle"><h4>실록 이름</h4></div>
                     <input id="inputName" name="user.name" v-model="user.name" placeholder="이름을 입력하세요." style="cursor: text"/>
@@ -188,12 +188,12 @@
     }
 
     #channelName {
-        margin-top: 3%;
+        margin-top: 1.5vh;
         width: 100%; height: auto;
     }
 
     .contentTitle {
-        margin-bottom: 1%;
+        margin-bottom: 0.5vh;
     }
 
     #inputName {
@@ -376,7 +376,7 @@
 
     }
 
-    @media all and (max-width:1024px){
+    @media all and (max-width:600px){
         #divLeft {
             margin-top: 2%;
         }
