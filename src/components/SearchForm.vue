@@ -71,6 +71,7 @@
 
     button {
         text-decoration: none;
+        outline: none;
         color: rgba(255, 255, 255, 0.5);
     }
 
@@ -79,6 +80,9 @@
         outline: none;
     }
 
+    button:focus {
+        outline: none;
+    }
 
     #marginTop {
         height: calc((100% - 35px) / 2);
