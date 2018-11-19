@@ -11,6 +11,7 @@ import HomeLayout from './components/home/HomeLayout'
 import Home from './components/home/Home'
 import SubscriptionList from './components/home/SubscriptionList'
 import CreateChannel from './components/home/CreateChannel'
+import EditProfile from './components/home/EditProfile'
 
 import ChannelLayout from'./components/channel/ChannelLayout'
 import Channel from './components/channel/Channel'
@@ -82,6 +83,11 @@ export default new Router({
                             name:'SearchResult',
                             path: '/search',
                             component: SearchResult,
+                        },
+                        {
+                            name:'EditProfile',
+                            path: '/editprofile',
+                            component: EditProfile,
                         }
                     ]// HomeLayout Children
                 },// HomeLayout
