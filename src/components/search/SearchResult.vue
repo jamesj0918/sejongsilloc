@@ -37,7 +37,7 @@
                                     <div class="userImgWrap"><img class="userImg" src="https://placehold.it/60x60"/></div>
                                     <div class="postInfo">
                                         <div class="postWriterName" >{{post.author.username}}</div>
-                                        <div class="date">{{post.created_at}}</div>
+                                        <div class="date">{{post.created_at | print_date}}</div>
                                         <div class="postChannelName">#{{post.channel.name}}</div>
                                     </div>
                                 </div>
@@ -63,6 +63,7 @@
                 posts: [],
             }
         },
+
         mounted(){
             axios.get('channel/?search='+this.search_data)
                 .then((response)=>{
@@ -75,6 +76,7 @@
                 });
 
         },
+
         methods:{
             gotoChannel(channel_slug){
                 this.$router.push('/'+channel_slug);
@@ -82,7 +84,15 @@
             gotoPost(channel_slug, post_pk){
                 this.$router.push('/'+channel_slug+'/'+post_pk);
             }
-        }
+        },
+
+        filters: {
+            print_date: function(date) {
+                if(!date) return ''
+                date = date.toString() // 이걸 써야하는가..
+                return date[0]+date[1]+date[2]+date[3]+'.'+date[5]+date[6]+'.'+date[8]+date[9]+' '+date[11]+date[12]+date[13]+date[14]+date[15]
+            }
+        },
     }
 </script>
 
@@ -164,8 +174,8 @@
 
     .channelInfo {
         width: calc(100% - 90px); height: 60px;
-        margin-top: 16px;
-        margin-bottom: 12px;
+        margin-top: 10px;
+        margin-bottom: 10px;
         display: inline-block;
         float: right;
     }
@@ -228,6 +238,7 @@
     .userImgWrap {
         width: 40px; height: 40px;
         margin: 5px 15px;
+        margin-right: 10px;
         border-radius: 50%;
         overflow: hidden;
         display: inline-block;
@@ -238,7 +249,7 @@
     }
 
     .postInfo {
-        width: calc(100% - 70px); height: 50px;
+        width: calc(100% - 65px); height: 50px;
         display: inline-block;
         float: right;
     }

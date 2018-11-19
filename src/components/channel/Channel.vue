@@ -14,63 +14,63 @@
                 ></sui-dropdown>
             </div>
         </div>
-        <div id="postList" v-if="!empty">
-            <ul>
-                <li v-for = "Post in pinned_post" class="post">
-                    <div class="postWrap">
-                        <div class="postHeader">
-                            <span class="name">
-                                {{Post.author.username}}
-                            </span>
-                            <span class="tag">
-                                #{{Post.channel.name}}
-                            </span>
+            <div id="postList" v-if="!empty">
+                <ul>
+                    <li v-for = "Post in pinned_post" class="post">
+                        <div class="postWrap">
+                            <div class="postHeader">
+                                <span class="name">
+                                    {{Post.author.username}}
+                                </span>
+                                <span class="tag">
+                                    #{{Post.channel.name}}
+                                </span>
+                            </div>
+                            <div class="postBody">
+                                <span class="title" v-on:click="postView(Post.id)"  style="cursor:pointer">
+                                    <h4>{{Post.title}}</h4>
+                                </span>
+                            </div>
+                            <div class="postMenu">
+                                <i class="comment icon" ></i>
+                                {{Post.comments}} &emsp;
+                                <i class="heart outline icon"  v-if="!Post.heart"></i>
+                                <i class="heart red icon"  v-else></i>
+                                {{Post.likes_count-Post.dislikes_count}}
+                            </div>
                         </div>
-                        <div class="postBody">
-                            <span class="title" v-on:click="postView(Post.id)"  style="cursor:pointer">
-                                <h4>{{Post.title}}</h4>
-                            </span>
+                    </li>
+                </ul>
+                <div class="ui horizontal divider" v-if="pinned_post.length !== 0">
+                    공지
+                </div>
+                <ul>
+                    <li v-for = "Post in posts" class="post">
+                        <div class="postWrap">
+                            <div class="postHeader">
+                                <span class="name">
+                                    {{Post.author.username}}
+                                </span>
+                                <span class="tag">
+                                    #{{Post.channel.name}}
+                                </span>
+                            </div>
+                            <div class="postBody">
+                                <span class="title" v-on:click="postView(Post.id)"  style="cursor:pointer">
+                                    <h4>{{Post.title}}</h4>
+                                </span>
+                            </div>
+                            <div class="postMenu">
+                                <i class="comment icon" ></i>
+                                {{Post.comments}} &emsp;
+                                <i class="heart outline icon"  v-if="!Post.heart"></i>
+                                <i class="heart red icon"  v-else></i>
+                                {{Post.likes_count-Post.dislikes_count}}
+                            </div>
                         </div>
-                        <div class="postMenu">
-                            <i class="comment icon" ></i>
-                            {{Post.comments}} &emsp;
-                            <i class="heart outline icon"  v-if="!Post.heart"></i>
-                            <i class="heart red icon"  v-else></i>
-                            {{Post.likes_count-Post.dislikes_count}}
-                        </div>
-                    </div>
-                </li>
-            </ul>
-            <div class="ui horizontal divider" v-if="pinned_post.length !== 0">
-                공지
+                    </li>
+                </ul>
             </div>
-            <ul>
-                <li v-for = "Post in posts" class="post">
-                    <div class="postWrap">
-                        <div class="postHeader">
-                            <span class="name">
-                                {{Post.author.username}}
-                            </span>
-                            <span class="tag">
-                                #{{Post.channel.name}}
-                            </span>
-                        </div>
-                        <div class="postBody">
-                            <span class="title" v-on:click="postView(Post.id)"  style="cursor:pointer">
-                                <h4>{{Post.title}}</h4>
-                            </span>
-                        </div>
-                        <div class="postMenu">
-                            <i class="comment icon" ></i>
-                            {{Post.comments}} &emsp;
-                            <i class="heart outline icon"  v-if="!Post.heart"></i>
-                            <i class="heart red icon"  v-else></i>
-                            {{Post.likes_count-Post.dislikes_count}}
-                        </div>
-                    </div>
-                </li>
-            </ul>
-        </div>
         <div id="noArticle" v-else>
             <h3>빈 실록입니다!</h3>
         </div>
@@ -141,8 +141,8 @@
     }
 
     #ChannelWrap {
-        width: 100%; height: 97vh;
-        overflow: scroll;
+        width: 100%; height: 92vh;
+        overflow-y: hidden;
     }
 
     #top {
@@ -181,6 +181,11 @@
 
     #sort {
         float: right;
+    }
+
+    #postList {
+        width: 100%; height: calc(92vh - 28px - 2%);
+        overflow-y: scroll;
     }
 
     .postWrap {
@@ -225,6 +230,7 @@
         font-size: 12px;
         color: rgba(89, 89, 89, 0.8);
     }
+
     #noArticle {
         text-align: center;
         margin-top: 10px;

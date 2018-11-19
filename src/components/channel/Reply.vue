@@ -30,7 +30,7 @@
                 </ul>
             <div id="replyField">
                 <textarea-autosize id="replyInput" v-model="reply_input"  placeholder="답글을 입력하세요."></textarea-autosize>
-                <button id="replySubmit" type="button" @click="replyComment()">
+                <button id="replySubmit" type="button" @click="replyComment()" style="cursor:pointer">
                     <i class="paper plane outline icon"></i>
                 </button>
             </div>
@@ -149,6 +149,10 @@
         list-style: none;
     }
 
+    button:focus {
+        outline: none;
+    }
+
     #showButton {
         height: 15px;
         font-size: 11px;
@@ -207,7 +211,7 @@
     }
 
     #replyDate {
-        width: 93px; height: 15px;
+        width: auto; height: 15px;
         margin-left: 10px;
         font-size: 11px;
         font-weight: bold;

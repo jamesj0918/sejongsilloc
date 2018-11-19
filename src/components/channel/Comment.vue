@@ -3,14 +3,14 @@
         <div id="commentsCount">
             <a>
                 댓글 {{comments_length}}개
-                <i class="angle down icon" v-if="hide===true" @click="hide=false"></i>
-                <i class="angle up icon" v-else @click="hide=true"></i>
+                <i class="angle down icon" v-if="hide===true" @click="hide=false" style="cursor:pointer"></i>
+                <i class="angle up icon" v-else @click="hide=true" style="cursor:pointer"></i>
             </a>
         </div>
         <div id="comment_wrap" v-if="!hide">
             <div id="commentField">
                 <textarea-autosize id="commentInput" placeholder="댓글을 입력하세요." v-model="reply"></textarea-autosize>
-                <button id="commentSubmit" type="submit" @click="commentSubmit()">
+                <button id="commentSubmit" type="submit" @click="commentSubmit()" style="cursor:pointer">
                     <i class="paper plane outline icon"></i>
                 </button>
             </div>
@@ -182,6 +182,10 @@
 
     ul {
         list-style: none;
+    }
+
+    button:focus {
+        outline: none;
     }
 
     #commentsCount {

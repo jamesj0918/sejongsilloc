@@ -14,7 +14,7 @@
             </div>
             <form id="searchDiv" @submit.prevent="search(search_data)">
                 <input id="search" v-model="search_data" type="text" placeholder="검색할 내용을 입력하세요.">
-                <div id="searchIconWrapper"><button id="search_submit" type="submit"><i class="white search icon"></i></button></div>
+                <div id="searchIconWrapper"><button id="search_submit" type="submit" style="cursor:pointer"><i class="white search icon"></i></button></div>
             </form>
         </div>
     </div>
@@ -68,6 +68,17 @@
     ::-webkit-scrollbar-thumb {
         background-color: #8c151f;
     }
+
+    button {
+        text-decoration: none;
+        color: rgba(255, 255, 255, 0.5);
+    }
+
+    button:hover {
+        color: rgba(255, 255, 255, 1);
+        outline: none;
+    }
+
 
     #marginTop {
         height: calc((100% - 35px) / 2);

@@ -4,7 +4,7 @@
             <channel-profile-card :subscribers=channel_subscribers></channel-profile-card>
         </div>
         <div id="channelDescriptionWrap">
-            <h5 id="channelDescriptionTitle">실록 설명</h5>
+            <h4 id="channelDescriptionTitle">실록 설명</h4>
             <div id="channelDescription">{{channel_info.description}}</div>
         </div>
         <div id="channelRuleWrap">
@@ -123,6 +123,7 @@
 
     #channelDescriptionTitle {
         color: #8c151f;
+        font-weight: bold;
     }
 
     #channelDescription {

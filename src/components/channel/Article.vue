@@ -52,13 +52,13 @@
             <div id="updownVote">
                 <div id="upVote">
                     <a>
-                        <img src="../../images/upvote.png" :class="{unvoted: !upVoted, voted: upVoted }" @click="upvote" id="upvotedIcon"/>
+                        <img src="../../images/upvote.png" :class="{unvoted: !upVoted, voted: upVoted }" @click="upvote" style="cursor:pointer" id="upvotedIcon"/>
                         <div id="upvoteCount" >{{upCount}}</div>
                     </a>
                 </div>
                 <div id="downVote">
                     <a>
-                        <img src="../../images/downvote.png" :class="{unvoted: !downVoted, voted: downVoted }" @click="downvote" id="downvotedIcon">
+                        <img src="../../images/downvote.png" :class="{unvoted: !downVoted, voted: downVoted }" @click="downvote" style="cursor:pointer" id="downvotedIcon">
                         <div id="downvoteCount">{{downCount}}</div>
                     </a>
                 </div>

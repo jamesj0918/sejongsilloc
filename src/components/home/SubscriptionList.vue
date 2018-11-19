@@ -1,7 +1,7 @@
 <template>
     <div id="SubscriptionList">
         <div id="SubscriptionListWrapper">
-            <div id="pageTitle"><h3>나의 구독 채널 보기</h3></div>
+            <div id="pageTitle"><h3>나의 구독 실록 보기</h3></div>
             <div id="subscriptionListWrap">
                 <ul>
                     <li v-for="(channel, id) in channel_list">
@@ -10,12 +10,12 @@
                                 <img id="channelImg" src="https://placehold.it/60x60">
                             </div>
                             <div id="channelData">
-                                <div id="channelName" @click="enterChannel(channel.slug)">#{{channel.name}}</div>
-                                <div id="channelNameMobile" @click="enterChannel(channel.slug)">{{channel.name}}</div>
+                                <div id="channelName" @click="enterChannel(channel.slug)" style="cursor:pointer">#{{channel.name}}</div>
+                                <div id="channelNameMobile" @click="enterChannel(channel.slug)" style="cursor:pointer">{{channel.name}}</div>
                                 <div id="channelDescription">{{channel.description}}</div>
                             </div>
                             <div id="subscriptionBtnWrapper">
-                                <div id="subscriptionBtn">구독취소</div>
+                                <div id="subscriptionBtn" style="cursor:pointer">구독취소</div>
                             </div>
                         </div>
                     </li>

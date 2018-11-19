@@ -1,7 +1,7 @@
 <template>
     <div id="EditPostWrap">
         <div id="writingPostHeader">
-            <h3>실록 기록하기</h3>
+            <h3>실록 수정하기</h3>
             <span id="channelName">#{{channelName}}</span>
         </div>
         <div id="inputWrapper">
@@ -23,7 +23,7 @@
                     </span>
                 </div>
             </div>
-            <button id="submitButton" type="button" @click="submit()">기록하기</button>
+            <button id="submitButton" type="button" @click="submit()" style="cursor:pointer">수정하기</button>
         </div>
     </div>
 </template>

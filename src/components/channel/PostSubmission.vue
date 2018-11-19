@@ -24,7 +24,7 @@
                             </span>
                         </div>
                     </div>
-                    <button id="submitButton" type="submit">기록하기</button>
+                    <button id="submitButton" type="submit" style="cursor:pointer">기록하기</button>
                 </form>
             </div>
         </div>

@@ -1,36 +1,38 @@
 <template>
-    <div id="HomeWrap">
-        <div id="postList" v-if="!empty">
-            <ul>
-                <li v-for = "Post in posts.slice().reverse()" class="post">
-                    <div class="postWrap">
-                        <div class="postHeader">
-                            <span class="name">
-                                {{Post.author.username}}
-                            </span>
-                            <span class="tag">
-                                #{{Post.channel.name}}
-                            </span>
+    <div id="Home">
+        <div id="HomeWrap">
+            <div id="postList" v-if="!empty">
+                <ul>
+                    <li v-for = "Post in posts.slice().reverse()" class="post">
+                        <div class="postWrap">
+                            <div class="postHeader">
+                                <span class="name">
+                                    {{Post.author.username}}
+                                </span>
+                                <span class="tag">
+                                    #{{Post.channel.name}}
+                                </span>
+                            </div>
+                            <div class="postBody">
+                                <span class="title" v-on:click="postView(Post.id, Post.channel.slug)"  style="cursor:pointer">
+                                    <h4>{{Post.title}}</h4>
+                                    <i v-if="Post.pinned" id="pinned" class="thumbtack icon"></i>
+                                </span>
+                            </div>
+                            <div class="postMenu">
+                                <i class="comment icon" ></i>
+                                {{Post.comments}} &emsp;
+                                <i class="heart outline icon"  v-if="!Post.heart"></i>
+                                <i class="heart red icon"  v-else></i>
+                                {{Post.likes_count-Post.dislikes_count}}
+                            </div>
                         </div>
-                        <div class="postBody">
-                            <span class="title" v-on:click="postView(Post.id, Post.channel.slug)"  style="cursor:pointer">
-                                <h4>{{Post.title}}</h4>
-                                <i v-if="Post.pinned" id="pinned" class="thumbtack icon"></i>
-                            </span>
-                        </div>
-                        <div class="postMenu">
-                            <i class="comment icon" ></i>
-                            {{Post.comments}} &emsp;
-                            <i class="heart outline icon"  v-if="!Post.heart"></i>
-                            <i class="heart red icon"  v-else></i>
-                            {{Post.likes_count-Post.dislikes_count}}
-                        </div>
-                    </div>
-                </li>
-            </ul>
-        </div>
-        <div id="noArticle" v-else>
-            <h3>빈 실록입니다!</h3>
+                    </li>
+                </ul>
+            </div>
+            <div id="noArticle" v-else>
+                <h3>빈 실록입니다!</h3>
+            </div>
         </div>
     </div>
 </template>
@@ -83,8 +85,25 @@
         font-family: "Noto Sans KR";
     }
 
+    ul {
+        list-style: none;
+    }
+
     button:focus {
         outline: none;
+    }
+
+    h4{
+        display: inline-block;
+    }
+
+    #Home {
+        width: 100%; height: 92vh;
+        overflow-y: scroll;
+    }
+
+    #HomeWrap {
+        width: 100%; height: auto;
     }
 
     #pinned {
@@ -92,9 +111,6 @@
         margin: 0 3px;
         font-size: 18px;
         height: 23px; width: 22px;
-    }
-    h4{
-        display: inline-block;
     }
 
     .postWrap {
@@ -138,5 +154,10 @@
     .postMenu {
         font-size: 12px;
         color: rgba(89, 89, 89, 0.8);
+    }
+
+    #noArticle {
+        text-align: center;
+        margin-top: 10px;
     }
 </style>
