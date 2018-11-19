@@ -23,6 +23,7 @@
     * {
         margin: 0;
         padding: 0;
+        cursor: default;
         font-family: "Noto Sans KR";
     }
 

@@ -97,6 +97,7 @@
     *{
         margin: 0;
         padding: 0;
+        cursor: default;
     }
 
     ol {

@@ -6,10 +6,10 @@
         </div>
         <div id="inputWrapper">
             <div id="titleWrapper">
-                <input id="inputTitle" placeholder="제목을 입력해주세요" type="text" v-model="Post.title"/>
+                <input id="inputTitle" placeholder="제목을 입력해주세요" type="text" v-model="Post.title" style="cursor:text"/>
             </div>
             <div id="contentWrapper">
-                <textarea id="inputContent" placeholder="무슨 생각을 하고 있나요?"  v-model="Post.content"></textarea>
+                <textarea id="inputContent" placeholder="무슨 생각을 하고 있나요?" v-model="Post.content" style="cursor:text"></textarea>
                 <div id="articleInputMenu">
                     <span id="addVote"><i class="archive icon"></i></span>
                     <span id="addVideo"><i class="video icon"></i></span>
@@ -82,6 +82,7 @@
     * {
         margin: 0;
         padding: 0;
+        cursor: default;
         font-family: "Noto Sans KR";
     }
 

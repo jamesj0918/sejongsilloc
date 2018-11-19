@@ -276,7 +276,7 @@
 
     .dropdownMenu {
         display: inline-block;
-        width: 120px;
+        width: 130px;
         float: right;
         background-color: white;
         padding: 8px 2px;

@@ -14,8 +14,8 @@
                                 </span>
                             </div>
                             <div class="postBody">
-                                <span class="title" v-on:click="postView(Post.id, Post.channel.slug)"  style="cursor:pointer">
-                                    <h4>{{Post.title}}</h4>
+                                <span class="title" v-on:click="postView(Post.id, Post.channel.slug)"  >
+                                    <h4 style="cursor:pointer">{{Post.title}}</h4>
                                     <i v-if="Post.pinned" id="pinned" class="thumbtack icon"></i>
                                 </span>
                             </div>
@@ -82,6 +82,7 @@
     * {
         margin: 0;
         padding: 0;
+        cursor: default;
         font-family: "Noto Sans KR";
     }
 
