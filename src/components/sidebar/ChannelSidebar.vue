@@ -12,16 +12,14 @@
             <div id="channelRuleListWrap">
                 <ol>
                     <li v-for="rule in rules">
-
                         {{rule}}
-
                     </li>
                 </ol>
             </div>
         </div>
         <div id="channelBtn">
             <div class="buttonWrap">
-                <button>실록 수정</button>
+                <button @click="link_dashboard()">실록 수정</button>
             </div>
             <div class="buttonWrap">
                 <button v-if="!user_subscribe" @click="subscribe">구독 하기</button>
@@ -87,6 +85,9 @@
                     .catch(()=>{
                         alert("관리자는 구독을 취소할 수 없습니다.");
                     })
+            },
+            link_dashboard(){
+                this.$router.push({name: 'DashBoard'});
             }
         }
     }
