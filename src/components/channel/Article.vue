@@ -46,6 +46,9 @@
         <div id="contentWrap">
             <div id="content">{{post.content}}</div>
             <div id="image"></div>
+            <div v-if="post.vote!==null">
+                <before-vote :vote="vote_data"></before-vote>
+            </div>
         </div>
 
         <div id="like">
@@ -69,7 +72,7 @@
 
 <script>
     import axios from 'axios'
-
+    import BeforeVote from './BeforeVote'
     export default {
         name: "Article",
         data() {
@@ -88,12 +91,18 @@
                 isPinned: false,
                 is_moderator: false,
                 submission_date: [],
-                submission_time: []
+                submission_time: [],
+                vote_data: '',
+
             }
+        },
+        components:{
+          'before-vote': BeforeVote
         },
         created() {
             axios.get('post/' + this.postID + '/')
                 .then((response) => {
+
                     this.post = response.data;
                     this.username = response.data.author.username;
                     this.upCount = response.data.likes;
@@ -104,7 +113,8 @@
                     this.submission_time = response.data.created_at.split('T')[1].split('.')[0];
                     this.upCount = response.data.likes_count;
                     this.downCount = response.data.dislikes_count;
-                    console.log(response.data.channel.moderators)
+                    this.vote_data = response.data.vote[0];
+
 
                     for(var i=0;i<response.data.channel.moderators.length;i++){
                         if(response.data.channel.moderators[i] == this.user_pk){

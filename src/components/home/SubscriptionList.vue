@@ -4,7 +4,7 @@
             <div id="pageTitle"><h3>나의 구독 채널 보기</h3></div>
             <div id="subscriptionListWrap">
                 <ul>
-                    <li v-for="(channel, id) in channel_list">
+                    <li v-for="channel in channel_list">
                         <div id="singleChannel">
                             <div id="channelImgWrapper">
                                 <img id="channelImg" src="https://placehold.it/60x60">
@@ -41,9 +41,8 @@
             },
         },
         mounted(){
-            axios.get('channel/')
+            axios.get('channel/?subscribed=1')
                 .then((response)=>{
-
                     this.channel_list = response.data;
 
                 })
@@ -55,7 +54,6 @@
     * {
         margin: 0;
         padding: 0;
-        font-family: "Noto Sans KR";
     }
 
     li {

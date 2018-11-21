@@ -63,30 +63,25 @@
                     this.channel_info = response.data;
                     this.channel_subscribers = response.data.subscribers.length;
                 })
-                .catch(()=>{
-                    alert("잘못된 접근입니다.");
-                    this.$router.push('/');
-                });
+
 
 
         },
         methods:{
             subscribe(){
                 axios.post('channel/'+this.channel_id+'/subscribe/')
-                    .then((response)=>{
+                    .then(()=>{
                         this.user_subscribe = true;
-                        this.channel_subscribers = response.data.subscribers.length;
+                        this.channel_subscribers++;
                     })
             },
             unsubscribe(){
                 axios.delete('channel/'+this.channel_id+'/subscribe/')
-                    .then((response)=>{
+                    .then(()=>{
                         this.user_subscribe = false;
-                        this.channel_subscribers = response.data.subscribers.length;
+                        this.channel_subscribers--;
                     })
-                    .catch(()=>{
-                        alert("관리자는 구독을 취소할 수 없습니다.");
-                    })
+
             }
         }
     }

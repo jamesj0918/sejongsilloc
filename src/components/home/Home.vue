@@ -2,7 +2,7 @@
     <div id="HomeWrap">
         <div id="postList" v-if="!empty">
             <ul>
-                <li v-for = "Post in posts" class="post">
+                <li v-for = "Post in posts.slice().reverse()"  class="post">
                     <div class="postWrap">
                         <div class="postHeader">
                             <span class="name">
@@ -62,7 +62,7 @@
             }
         },
         mounted(){
-            axios.get('post/?subscribed=1/')
+            axios.get('post/?subscribed=1')
                 .then((response)=> {
                     if(response.data.length == 0) return;
                     this.empty = false;
