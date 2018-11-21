@@ -19,7 +19,7 @@
         </div>
         <div id="channelBtn">
             <div class="buttonWrap">
-                <button @click="link_dashboard()">실록 수정</button>
+                <button v-if="is_moderator == true" @click="link_dashboard()">실록 수정</button>
             </div>
             <div class="buttonWrap">
                 <button v-if="!user_subscribe" @click="subscribe">구독 하기</button>
@@ -45,6 +45,7 @@
               channel_id: this.$route.params.channelID,
               user_subscribe: false,
               channel_subscribers: 0,
+              is_moderator: false
           }
         },
         components:{
@@ -53,9 +54,17 @@
         mounted(){
             axios.get('channel/'+this.channel_id)
                 .then((response)=>{
+                    console.log(response);
                     for(let i=0;i<response.data.subscribers.length;i++){
                         if(response.data.subscribers[i].id == this.user_pk){
                             this.user_subscribe = true;
+                            break;
+                        }
+                    }
+                    for(let i=0; i<response.data.moderators.length; i++){
+                        if(response.data.moderators[i].id == this.user_pk){
+                            this.is_moderator = true;
+                            break;
                         }
                     }
                     this.channel_info = response.data;
