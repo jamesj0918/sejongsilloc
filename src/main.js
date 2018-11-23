@@ -7,10 +7,12 @@ import VueAxios from 'vue-axios'
 import SuiVue from 'semantic-ui-vue'
 import '../semantic/dist/semantic.min.css'
 import VueTextareaAutosize from 'vue-textarea-autosize'
+import Vue2Filters from 'vue2-filters'
 
 Vue.use(VueAxios, axios);
 Vue.use(SuiVue);
 Vue.use(VueTextareaAutosize);
+Vue.use(Vue2Filters);
 
 Vue.config.productionTip = false;
 

@@ -47,7 +47,12 @@
             <div id="content">{{post.content}}</div>
             <div id="image"></div>
             <div v-if="post.vote!==null">
-                <before-vote :vote="vote_data"></before-vote>
+                <before-vote v-if="!is_voted"
+                             v-on:vote_submit="voteSubmit()"
+                             :vote="vote_data"
+                             :user_pick="user_pick"></before-vote>
+                <after-vote v-else
+                            :vote="vote_data"></after-vote>
             </div>
         </div>
 
@@ -61,7 +66,10 @@
                 </div>
                 <div id="downVote">
                     <a>
-                        <img src="../../images/downvote.png" :class="{unvoted: !downVoted, voted: downVoted }" @click="downvote" id="downvotedIcon">
+                        <img src="../../images/downvote.png"
+                             :class="{unvoted: !downVoted, voted: downVoted }"
+                             @click="downvote"
+                             id="downvotedIcon">
                         <div id="downvoteCount">{{downCount}}</div>
                     </a>
                 </div>
@@ -73,6 +81,7 @@
 <script>
     import axios from 'axios'
     import BeforeVote from './BeforeVote'
+    import AfterVote from './AfterVue'
     export default {
         name: "Article",
         data() {
@@ -93,11 +102,15 @@
                 submission_date: [],
                 submission_time: [],
                 vote_data: '',
+                is_voted: false,
+                vote_result: [],
+                user_pick: [],
 
             }
         },
         components:{
-          'before-vote': BeforeVote
+            'before-vote': BeforeVote,
+            'after-vote': AfterVote,
         },
         created() {
             axios.get('post/' + this.postID + '/')
@@ -113,8 +126,6 @@
                     this.submission_time = response.data.created_at.split('T')[1].split('.')[0];
                     this.upCount = response.data.likes_count;
                     this.downCount = response.data.dislikes_count;
-                    this.vote_data = response.data.vote[0];
-
 
                     for(var i=0;i<response.data.channel.moderators.length;i++){
                         if(response.data.channel.moderators[i] == this.user_pk){
@@ -137,10 +148,22 @@
                             }
                         }
                     }
+                    if(response.data.vote !==null){
+                        this.vote_data = response.data.vote[0];
 
+                        for(let i = 0;i<this.vote_data.choices.length;i++){
+                            axios.get('addon/vote/'+this.vote_data.id+'/'+this.vote_data.choices[i].id+'/responder/')
+                                .then((response)=>{
+                                    if(response.data.find(c => c.id == this.user_pk)){
+                                        this.is_voted = true;
+                                    }
+                                })
+                        }
 
-
+                    }
                 })
+
+
         },
         methods: {
             deleteArticle(){
@@ -148,6 +171,9 @@
                     .then(()=>{
                         this.$router.push('/'+this.channelID);
                     })
+            },
+            voteSubmit(){
+                this.is_voted = true;
             },
 
             upvote() {
