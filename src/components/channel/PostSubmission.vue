@@ -20,7 +20,7 @@
                             <span id="addVote" @click="showVote()"><i class="archive icon"></i></span>
                             <span id="addVideo"><i class="video icon"></i></span>
                             <span id="addPhoto"><i class="camera icon"></i></span>
-                            <span id="toPinned">
+                            <span v-if="is_moderator === true" id="toPinned">
                                 <a style="cursor:pointer" v-on:click="Post.is_pinned=!Post.is_pinned">
                                     <i class="thumbtack icon" :class="{'Pinned' : Post.is_pinned}"></i>
                                     <span id="toPin" v-show="!Post.is_pinned">공지 띄우기</span>
@@ -48,12 +48,14 @@
                     content: "",
                     is_pinned: false,
                 },
+                user_pk: localStorage.getItem("user_pk"),
                 channel_pk: '',
                 channel_id: this.$route.params.channelID,
                 channelName: "",
                 vote: false,
                 bus: new Vue(),
                 post_pk: null,
+                is_moderator: false
             }
         },
         components:{
@@ -96,7 +98,14 @@
                 .then((response) => {
                     this.channelName=response.data.name;
                     this.channel_pk = response.data.id;
+                    for(let i=0;i<response.data.moderators.length;i++){
+                        if(response.data.moderators[i].id == this.user_pk){
+                            this.is_moderator = true;
+                            break;
+                        }
+                    }
                 })
+
         }
     }
 </script>
