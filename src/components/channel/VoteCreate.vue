@@ -54,12 +54,15 @@
                 this.choices.splice(index,1)
             },
             createVote(post_id){
+                if(this.overlab === false){
+                    this.choice_count = 1;
+                }
                 const vote_data={
                     choices: this.choices,
                     title: this.title,
                     description: this.description,
+                    max_responses: this.choice_count,
                 };
-                console.log('yo',post_id);
 
                 axios.post('addon/vote/',vote_data)
                     .then((response)=>{

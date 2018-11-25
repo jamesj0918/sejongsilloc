@@ -79,7 +79,6 @@
                         .then((response) => {
                             this.$router.push('/' + this.channel_id);
                             this.post_pk = response.data.id;
-                            console.log('hello',response.data.id);
                             if(this.vote===true){
                                 this.bus.$emit('createVote',response.data.id);
                             }
