@@ -45,7 +45,9 @@
         </div>
         <div id="contentWrap">
             <div id="content">{{post.content}}</div>
-            <div id="image"></div>
+            <div id="image" >
+
+            </div>
             <div v-if="post.vote!==null">
                 <before-vote v-if="!is_voted"
                              v-on:vote_submit="voteSubmit()"
@@ -81,7 +83,7 @@
 <script>
     import axios from 'axios'
     import BeforeVote from './BeforeVote'
-    import AfterVote from './AfterVue'
+    import AfterVote from './AfterVote'
     export default {
         name: "Article",
         data() {
@@ -134,7 +136,7 @@
                     }
 
                     for(var i=0; i<response.data.likes_count; i++){
-                        if(response.data.likes[i].id == this.user_pk){
+                        if(response.data.likes[i] == this.user_pk){
                             this.upVoted = true;
                             break;
                         }

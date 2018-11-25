@@ -13,13 +13,14 @@
                     <div id="contentWrapper">
                         <div id="inputContent">
                             <textarea placeholder="무슨 생각을 하고 있나요?" v-model="Post.content"/>
-                            <vote-create v-if="vote" :bus="bus" :post_pk="post_pk"></vote-create>
+                            <vote-create v-if="vote===true" :bus="bus" :post_pk="post_pk"></vote-create>
+                            <upload-image v-if="image===true"></upload-image>
 
                         </div>
                         <div id="articleInputMenu">
                             <span id="addVote" @click="showVote()"><i class="archive icon"></i></span>
                             <span id="addVideo"><i class="video icon"></i></span>
-                            <span id="addPhoto"><i class="camera icon"></i></span>
+                            <span id="addPhoto" @click="image=!image"><i class="camera icon"></i></span>
                             <span v-if="is_moderator === true" id="toPinned">
                                 <a style="cursor:pointer" v-on:click="Post.is_pinned=!Post.is_pinned">
                                     <i class="thumbtack icon" :class="{'Pinned' : Post.is_pinned}"></i>
@@ -39,6 +40,7 @@
     import axios from 'axios'
     import Vue from 'vue'
     import VoteCreate from './VoteCreate'
+    import UploadImage from './UploadImage'
     export default {
         name: "WritingPost",
         data(){
@@ -55,11 +57,13 @@
                 vote: false,
                 bus: new Vue(),
                 post_pk: null,
-                is_moderator: false
+                is_moderator: false,
+                image: false,
             }
         },
         components:{
             'vote-create': VoteCreate,
+            'upload-image': UploadImage,
         },
         methods: {
             submit(){
