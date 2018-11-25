@@ -1,51 +1,81 @@
-<!--suppress HtmlFormInputWithoutLabel, SpellCheckingInspection -->
 <template>
-    <div>
-        <vue-tabs
-            direction="vertical"
-            active-tab-color="#8c151f"
-            active-text-color="white">
-            <v-tab title="프로필 및 배경사진"> 사진 변경 (아직 안됨) </v-tab>
-            <v-tab title="실록 이름">
-                실록 이름 변경
-                <br>
-                <input v-model="channel_name">
-            </v-tab>
-            <v-tab title="실록 설명">
-                실록 설명 변경
-                <br>
-                <input v-model="channel_description">
-            </v-tab>
-            <v-tab title="실록 규칙">규칙 (아직 안됨) </v-tab>
-        </vue-tabs>
-        <hr>
-        <vue-tabs
-            direction="vertical"
-            active-tab-color="#8c151f"
-            active-text-color="white">
-            <v-tab title="구독자 목록">
-                <div v-if="channel_subscribers.length === 0">구독자가 없어용 ㅎㅎ 너무 아쉽네 ;-;</div>
-                <div v-else v-for="subscriber in channel_subscribers">
-                    {{subscriber.username}}
-                    <button @click="add_to_blacklist(subscriber); delete_from_array(channel_subscribers, subscriber.id);"> 차단 </button>
-                    <br>
-                </div>
-            </v-tab>
-            <v-tab title="차단 목록">
-                <div v-if="channel_blacklist.length === 0">차단된 사용자가 없어용 ㅎㅎ</div>
-                <div v-else v-for="blacked_user in channel_blacklist">
-                    {{blacked_user.username}}
-                    <button @click="delete_from_array(channel_blacklist, blacked_user.id)"> 차단 해제 </button>
-                </div>
-            </v-tab>
-            <v-tab title="관리자 목록">
-                <div v-for="moderator in channel_moderators">
-                    {{moderator.username}}
-                    <button @click="delete_from_array(channel_moderators, moderator.id)"> 관리자 삭제 </button>
-                </div>
-            </v-tab>
-        </vue-tabs>
-        <button style="cursor:pointer" @click="update_channel()"> 적용 </button>
+    <div id="DashBoard">
+        <div id="DashBoardWrap">
+            <div id="dashBoardTitle"><h3>실록 관리</h3></div>
+            <div id="channelManaging">
+                <div class="tabTitle"><h4>기본 정보 수정</h4></div>
+                <vue-tabs id="channelTabWrap"
+                    direction="vertical"
+                    active-tab-color="darkGray"
+                    active-text-color="white"
+                    type="pills"
+                >
+                    <v-tab title="프로필 및 배경사진" class="channelMenuList">
+                        <div class="contentTitle">사진 변경 (아직 안됨)</div>
+                    </v-tab>
+                    <v-tab title="실록 이름" class="channelMenuList">
+                        <div class="contentTitle">실록 이름 변경</div>
+                        <input id="channelNameInput" v-model="channel_name" style="cursor: text">
+                    </v-tab>
+                    <v-tab title="실록 설명" class="channelMenuList">
+                        <div class="contentTitle">실록 설명 변경</div>
+                        <input id="channelDescriptionInput" v-model="channel_description" style="cursor: text">
+                    </v-tab>
+                    <v-tab title="실록 규칙" class="channelMenuList">
+                        <div class="contentTitle">규칙 (아직 안됨)</div>
+                    </v-tab>
+                </vue-tabs>
+            </div>
+            <div id="subscriberManaging">
+                <div class="tabTitle"><h4>구독자 관리</h4></div>
+                <vue-tabs id="subscriberTabWrap"
+                    direction="vertical"
+                    active-tab-color="darkGray"
+                    active-text-color="white"
+                    type="pills"
+                >
+                    <v-tab title="구독자 목록" class="subscriberMenuList">
+                        <div v-if="channel_subscribers.length === 0">
+                            <div class="noData">구독자가 없어용 ㅎㅎ 너무 아쉽네 ;-;</div>
+                        </div>
+                        <div v-else v-for="subscriber in channel_subscribers" id="subscriberWrap">
+                            <div id="subscriberListWrap">
+                                <div id="subscriberList">{{subscriber.username}}</div>
+                                <button id="blockBtn" @click="add_to_blacklist(subscriber); delete_from_array(channel_subscribers, subscriber.id);" style="cursor: pointer">
+                                    차단
+                                </button>
+                            </div>
+                        </div>
+                    </v-tab>
+                    <v-tab title="차단 목록" class="subscriberMenuList">
+                        <div v-if="channel_blacklist.length === 0">
+                            <div class="noData">차단된 사용자가 없어용 ㅎㅎ</div>
+                        </div>
+                        <div v-else v-for="blacked_user in channel_blacklist" id="blockWrap">
+                            <div id="blockListWrap">
+                                <div id="blockList">{{blacked_user.username}}</div>
+                                <button id="unblockBtn" @click="delete_from_array(channel_blacklist, blacked_user.id)" style="cursor: pointer">
+                                    차단 해제
+                                </button>
+                            </div>
+                        </div>
+                    </v-tab>
+                    <v-tab title="관리자 목록" class="subscriberMenuList">
+                        <div v-for="moderator in channel_moderators" id="managerWrap">
+                            <div id="managerListWrap">
+                                <div id="managerList">{{moderator.username}}</div>
+                                <button id="deleteBtn" @click="delete_from_array(channel_moderators, moderator.id)" style="cursor: pointer">
+                                    관리자 삭제
+                                </button>
+                            </div>
+                        </div>
+                    </v-tab>
+                </vue-tabs>
+            </div>
+            <div id="BtnWrap">
+                <button id="submitBtn" style="cursor:pointer" @click="update_channel()"> 적용 </button>
+            </div>
+        </div>
     </div>
 </template>
 
@@ -60,7 +90,7 @@
                 channel_id: this.$route.params.channelID,
                 channel_subscribers: [],
                 channel_blacklist: [],
-                channel_moderators: []
+                channel_moderators: [],
             }
         },
         mounted(){
@@ -114,5 +144,227 @@
 </script>
 
 <style scoped>
+
+    *{
+        margin: 0;
+        padding: 0;
+        cursor: default;
+        font-family: "Noto Sans KR";
+    }
+
+    input {
+        outline: 0;
+        font-size: 12px;
+        font-weight: bold;
+        padding: 5px 5px;
+        background-color: rgba(242,242,242,0.6);
+        border-color: rgba(169,169,169,0.3);
+        border-width: 1px;
+        border-radius: 7px;
+    }
+
+    input:focus {
+        outline: none;
+    }
+
+    input::placeholder {
+        color: rgba(169, 169, 169, 1);
+        font-size: 12px;
+        font-weight: lighter;
+    }
+
+    input:focus::placeholder {
+        color: rgba(169, 169, 169, 0.6);
+    }
+
+    button {
+        width: auto; height: auto;
+        text-align: center;
+        padding: 4px;
+        font-size: 11px;
+        font-weight: bold;
+        background-color: #8c151f;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        display: inline-block;
+        float: right;
+    }
+
+    button:focus {
+        outline: none;
+    }
+
+
+    #DashBoard {
+        width: 100%; height: 92vh;
+        overflow-y: scroll;
+    }
+
+    #DashBoardWrap {
+        width: 97%; height: auto;
+        margin: 0 auto;
+        margin-top: 2%;
+        padding: 3% 3%;
+        border-radius: 10px;
+        background-color: white;
+    }
+
+    #channelManaging {
+        height: calc(164px + 4vh);
+        margin-top: 1.5vh;
+        border: 1px solid #c4c4c4;
+        border-radius: 5px;
+        overflow: hidden;
+    }
+
+    .tabTitle {
+        width: 100%; height: 4vh;
+        color: white;
+        padding: 1vh 1.1vw;
+        border-radius: 5px 5px 0 0;
+        background-color: #8c151f;
+    }
+
+    #channelTabWrap {
+        width: 100%; height: 162px;
+        font-size: 1.4vh;
+        font-weight: bold;
+    }
+
+    .channelMenuList {
+        width: calc(43.7664vw - 156px); height: 100%;
+        padding: 1vh 1vw;
+        font-weight: normal;
+        border-left: 1px solid #c4c4c4;
+    }
+
+    .contentTitle {
+        margin-bottom: 1.5%;
+        font-size: 1.4vh;
+        font-weight: bolder;
+    }
+
+    #channelNameInput {
+        width: 100%;
+    }
+
+    #channelDescriptionInput {
+        width: 100%;
+    }
+
+    #subscriberManaging {
+        height: calc(300px + 4vh);
+        margin-top: 1.5vh;
+        border: 1px solid #c4c4c4;
+        border-radius: 5px;
+        overflow: hidden;
+    }
+
+    #subscriberTabWrap {
+        width: 100%; height: 300px;
+        font-size: 1.4vh;
+        font-weight: bold;
+    }
+
+    .subscriberMenuList {
+        width: calc(43.7664vw - 111px); height: 300px;
+        padding: 1vh 1vw;
+        font-weight: normal;
+        border-left: 1px solid #c4c4c4;
+        overflow-y: scroll;
+    }
+
+    #subscriberWrap {
+        width: 100%; height: auto;
+    }
+
+    .noData {
+        color: #424242;
+    }
+
+    #subscriberListWrap {
+        width: 100%;
+    }
+
+    #subscriberList {
+        width: calc(100% - 50px - 1%);
+        display: inline-block;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        font-size: 14px;
+        font-weight: 600;
+    }
+
+    #blockBtn {
+        width: 50px;
+        margin-left: 1%;
+    }
+
+    #blockWrap {
+        width: 100%; height: auto;
+    }
+
+    #blockListWrap {
+        width: 100%;
+    }
+
+    #blockList {
+        width: calc(100% - 70px - 1%);
+        display: inline-block;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        font-size: 14px;
+        font-weight: 600;
+    }
+
+    #unblockBtn {
+        width: 70px;
+        margin-left: 1%;
+    }
+
+    #managerWrap {
+        width: 100%; height: auto;
+    }
+
+    #managerListWrap {
+        width: 100%;
+    }
+
+    #managerList {
+        width: calc(100% - 80px - 1%);
+        display: inline-block;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        font-size: 14px;
+        font-weight: 600;
+    }
+
+    #deleteBtn {
+        width: 80px;
+        margin-left: 1%;
+    }
+
+    #BtnWrap {
+        height: 50px;
+    }
+
+    #submitBtn {
+        width: 50px;
+        margin-top: 3vh;
+    }
+
+    @media all and (max-width:720px){
+        .channelMenuList {
+            width: calc(91.18vw - 155px);
+        }
+
+        .subscriberMenuList {
+            width: calc(91.18vw - 110px);
+        }
+    }
 
 </style>
