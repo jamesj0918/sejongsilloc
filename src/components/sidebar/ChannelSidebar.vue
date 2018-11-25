@@ -19,7 +19,7 @@
         </div>
         <div id="channelBtn">
             <div class="buttonWrap">
-                <button v-if="is_moderator == true" @click="link_dashboard()">실록 수정</button>
+                <button v-if="is_moderator === true" @click="link_dashboard()">실록 수정</button>
             </div>
             <div class="buttonWrap">
                 <button v-if="!user_subscribe" @click="subscribe">구독 하기</button>
@@ -77,16 +77,16 @@
         methods:{
             subscribe(){
                 axios.post('channel/'+this.channel_id+'/subscribe/')
-                    .then((response)=>{
+                    .then(()=>{
                         this.user_subscribe = true;
-                        this.channel_subscribers = response.data.subscribers.length;
+                        this.channel_subscribers++;
                     })
             },
             unsubscribe(){
                 axios.delete('channel/'+this.channel_id+'/subscribe/')
-                    .then((response)=>{
+                    .then(()=>{
                         this.user_subscribe = false;
-                        this.channel_subscribers = response.data.subscribers.length;
+                        this.channel_subscribers--;
                     })
                     .catch(()=>{
                         alert("관리자는 구독을 취소할 수 없습니다.");
@@ -94,6 +94,7 @@
             },
             link_dashboard(){
                 this.$router.push({name: 'DashBoard'});
+
             }
         }
     }

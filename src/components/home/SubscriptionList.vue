@@ -4,7 +4,7 @@
             <div id="pageTitle"><h3>나의 구독 실록 보기</h3></div>
             <div id="subscriptionListWrap">
                 <ul>
-                    <li v-for="(channel, id) in channel_list">
+                    <li v-for="channel in channel_list">
                         <div id="singleChannel">
                             <div id="channelImgWrapper">
                                 <img id="channelImg" src="https://placehold.it/60x60">

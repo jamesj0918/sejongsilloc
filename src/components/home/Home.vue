@@ -113,6 +113,9 @@
         font-size: 18px;
         height: 23px; width: 22px;
     }
+    h4{
+        display: inline-block;
+    }
 
     .postWrap {
         width: 97%;

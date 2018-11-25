@@ -31,7 +31,7 @@
             }
         },
         mounted(){
-            axios.get('channel/'+this.id)
+            axios.get('channel/'+this.id+'/')
             .then((response)=>{
                 this.channel_info = response.data;
             })
@@ -49,7 +49,6 @@
     *{
         margin: 0;
         padding: 0;
-        font-family: "Noto Sans KR";
     }
 
     #wrap {

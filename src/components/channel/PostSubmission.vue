@@ -2,17 +2,22 @@
         <div id="PostSubmissionWrap">
             <div id="writingPostHeader">
                 <h3>실록 기록하기</h3>
+                {{vote}}
                 <span id="channelName">#{{channelName}}</span>
             </div>
             <div id="inputWrapper">
                 <form @submit.prevent="submit()" method = "post">
                     <div id="titleWrapper">
-                        <input id="inputTitle" placeholder="제목을 입력해주세요" type="text" v-model="Post.title"/>
+                        <input id="inputTitle" placeholder="제목을 입력해주세요." type="text" v-model="Post.title"/>
                     </div>
                     <div id="contentWrapper">
-                        <textarea id="inputContent" placeholder="무슨 생각을 하고 있나요?" type="text" v-model="Post.content"></textarea>
+                        <div id="inputContent">
+                            <textarea placeholder="무슨 생각을 하고 있나요?" v-model="Post.content"/>
+                            <vote-create v-if="vote" :bus="bus" :post_pk="post_pk"></vote-create>
+
+                        </div>
                         <div id="articleInputMenu">
-                            <span id="addVote"><i class="archive icon"></i></span>
+                            <span id="addVote" @click="showVote()"><i class="archive icon"></i></span>
                             <span id="addVideo"><i class="video icon"></i></span>
                             <span id="addPhoto"><i class="camera icon"></i></span>
                             <span id="toPinned">
@@ -32,6 +37,8 @@
 
 <script>
     import axios from 'axios'
+    import Vue from 'vue'
+    import VoteCreate from './VoteCreate'
     export default {
         name: "WritingPost",
         data(){
@@ -43,11 +50,18 @@
                 },
                 channel_pk: '',
                 channel_id: this.$route.params.channelID,
-                channelName: ""
+                channelName: "",
+                vote: false,
+                bus: new Vue(),
+                post_pk: null,
             }
+        },
+        components:{
+            'vote-create': VoteCreate,
         },
         methods: {
             submit(){
+
                 const post_data={
                     title: this.Post.title,
                     content: this.Post.content,
@@ -62,10 +76,20 @@
                 }
                 else {
                     axios.post('/post/', post_data)
-                        .then(() => {
+                        .then((response) => {
                             this.$router.push('/' + this.channel_id);
+                            this.post_pk = response.data.id;
+                            console.log('hello',response.data.id);
+                            if(this.vote===true){
+                                this.bus.$emit('createVote',response.data.id);
+                            }
                         })
                 }
+
+
+            },
+            showVote(){
+                this.vote = true;
             }
         },
         mounted() {
@@ -82,7 +106,6 @@
     * {
         margin: 0;
         padding: 0;
-        font-family: "Noto Sans KR";
     }
 
     a {
@@ -238,9 +261,6 @@
         font-weight: bold;
     }
 
-    .Pinned {
-        color: #9e9e9e;
-    }
 
     #toUnpin {
         margin-right: 14px;
