@@ -43,7 +43,11 @@
             submitVote(){
 
                 for(let i=0;i<this.checked_choices.length;i++){
+<<<<<<< Updated upstream
                      axios.post('/addon/vote/'+this.vote.id+'/'+this.checked_choices[i]+'/')
+=======
+                    axios.post('/addon/vote/'+this.vote.id+'/'+this.checked_choices[i]+'/')
+>>>>>>> Stashed changes
                 }
                 this.$emit('vote_submit');
 
