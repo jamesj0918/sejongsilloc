@@ -84,7 +84,9 @@
                 icon : new FormData(),
                 wallpaper : new FormData(),
                 icon_pk : -1,
-                wallpaper_pk : -1
+                wallpaper_pk : -1,
+                icon_edited: false,
+                wallpaper_edited: false
             }
         },
         methods: {
@@ -109,9 +111,11 @@
             add_image(event, id){
                 if (id === 1){
                     this.icon.append('image', event.target.files[0]);
+                    this.icon_edited = true;
                 }
                 else{
                     this.wallpaper.append('image', event.target.files[0]);
+                    this.wallpaper_edited = true;
                 }
             },
             async submit_image(image, id){
@@ -133,10 +137,11 @@
                 const channel_data = {
                     name: this.name,
                     description: this.description,
-                    slug: this.domain,
-                    icon: this.icon_pk,
-                    wallpaper: this.wallpaper_pk
+                    slug: this.domain
                 };
+                if (this.icon_edited === true) channel_data.icon = this.icon_pk;
+                if (this.wallpaper_edited === true) channel_data.wallpaper = this.wallpaper_pk;
+
                 await axios.post('channel/',channel_data)
                     .then(()=>{
                         this.$router.push('/subscription');
@@ -149,10 +154,9 @@
                     ruleStr += "\\n" + this.rules[i].value;
                 }
 
-                await this.submit_image(this.icon, 1);
-                await this.submit_image(this.wallpaper, 2);
-                if (this.icon_pk !== -1 && this.wallpaper_pk !== -1) this.submit();
-
+                if (this.icon_edited === true) await this.submit_image(this.icon, 1);
+                if (this.wallpaper_edited === true) await this.submit_image(this.wallpaper, 2);
+                this.submit();
             }
         }
     }
