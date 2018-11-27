@@ -3,11 +3,13 @@
         <div id="channelProfileContainer">
             <div id="imgContainer">
                 <div id="bannerWrap">
-                    <img src="../../images/universe.jpg" id="bannerImg"/>
+                    <div v-if="wallpaper_url !== ''"><a :href="wallpaper_url"><img :src="wallpaper_url" class="bannerImg"/></a></div>
+                    <div v-else><img src="../../images/universe.jpg" class="bannerImg"></div>
                 </div>
                 <div id="profileWrap">
                     <div id="profileImgWrap">
-                        <img src="../../images/moon.jpg" id="profileImg"/>
+                        <a :href="icon_url"><img :src="icon_url" class="profileImg"/></a>
+                        <img src="../../images/moon.jpg" class="profileImg">
                     </div>
                 </div>
             </div>
@@ -25,15 +27,20 @@
         props: ['subscribers'],
         name: "ChannelProfileCard",
         data(){
-          return{
-              channel_info: [],
-              id: this.$route.params.channelID,
+            return{
+                channel_info: [],
+                id: this.$route.params.channelID,
+                icon_url : '',
+                wallpaper_url: ''
             }
         },
         mounted(){
             axios.get('channel/'+this.id+'/')
             .then((response)=>{
+                const base_url = 'https://sejongapi-v2.herokuapp.com';
                 this.channel_info = response.data;
+                this.icon_url = base_url + response.data.icon.image;
+                this.wallpaper_url = base_url + response.data.wallpaper.image;
             })
         },
         methods:{
@@ -79,7 +86,7 @@
         vertical-align: center;
     }
 
-    #bannerImg {
+    .bannerImg {
         width: 100%;
     }
 
@@ -99,7 +106,7 @@
         vertical-align: center;
     }
 
-    #profileImg {
+    .profileImg {
         width: 100%;
     }
 
