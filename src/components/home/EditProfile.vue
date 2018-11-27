@@ -4,11 +4,11 @@
             <div id="pageTitle"><h3>프로필 편집하기</h3></div>
             <div id="editProfileContent">
                 <div id="editName">
-                    <div class="contentTitle"><h4>닉네임 변경</h4></div>
+                    <div class="contentTitle"><h4>닉네임 수정</h4></div>
                     <input id="inputName" name="nickname" v-model="nickname" placeholder="닉네임을 입력하세요."/>
                 </div>
                 <div id="editImg">
-                    <div class="contentTitle"><h4>프로필 및 배경 사진 변경</h4></div>
+                    <div class="contentTitle"><h4>프로필 및 배경 사진 수정</h4></div>
                     <div id="editImgContent">
                         <div id="divLeft">
                             <div id="bannerImgWrap"></div>
@@ -20,17 +20,21 @@
                         </div>
                         <div id="divRight">
                             <div id="editBanner">
-                                <div class="contentSubTitle"><h5>배경 변경</h5></div>
+                                <div class="contentSubTitle"><h5>배경 수정</h5></div>
                                 <input id="inputBanner" name="" placeholder="사진을 불러오세요."/>
                                 <div class="imgSubmit"><a style="cursor:pointer">업로드</a></div>
                             </div>
                             <div id="editProfileImg">
-                                <div class="contentSubTitle"><h5>프로필 변경</h5></div>
+                                <div class="contentSubTitle"><h5>프로필 수정</h5></div>
                                 <input id="inputProfile" name="" placeholder="사진을 불러오세요."/>
                                 <div class="imgSubmit"><a style="cursor:pointer">업로드</a></div>
                             </div>
                         </div>
                     </div>
+                </div>
+                <div id="editBio">
+                    <div class="contentTitle"><h4>자기소개 수정</h4></div>
+                    <input id="inputDescription" name="" v-model = "description" placeholder="자기소개를 입력해주세요."/>
                 </div>
                 <div id="editBtnWrap">
                     <button id="cancelBtn" class="editBtn" type="button" @click="cancel">취소</button>
@@ -48,6 +52,7 @@
         data() {
             return {
                 nickname: "",
+                description: "",
             }
         },
         methods: {
@@ -57,6 +62,7 @@
             edit() {
                 const the_data = {
                     username: this.nickname,
+                    bio: this.description,
                 };
                 axios.patch('profile/',the_data)
                     .then(()=>{
@@ -68,6 +74,7 @@
             axios.get('profile/')
                 .then((response)=>{
                     this.nickname = response.data.username;
+                    this.description = response.data.bio;
                 })
         }
 
@@ -223,6 +230,15 @@
         width: calc(100% - 58px);
         color: #5b5b5b;
         display: inline-block;
+    }
+
+    #editBio {
+        width: 100%; height: auto;
+        margin-top: 3%;
+    }
+
+    #inputDescription {
+        width: 100%;
     }
 
     #editBtnWrap {
