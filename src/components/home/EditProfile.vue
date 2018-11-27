@@ -5,10 +5,10 @@
             <div id="editProfileContent">
                 <div id="editName">
                     <div class="contentTitle"><h4>닉네임 수정</h4></div>
-                    <input id="inputName" name="nickname" v-model="nickname" placeholder="닉네임을 입력하세요."/>
+                    <input id="inputName" name="username" v-model="username" placeholder="닉네임을 입력하세요."/>
                 </div>
                 <div id="editImg">
-                    <div class="contentTitle"><h4>프로필 및 배경 사진 수정</h4></div>
+                    <div class="contentTitle"><h4>프로필 및 배경 사진 수</h4></div>
                     <div id="editImgContent">
                         <div id="divLeft">
                             <div id="bannerImgWrap"></div>
@@ -21,24 +21,22 @@
                         <div id="divRight">
                             <div id="editBanner">
                                 <div class="contentSubTitle"><h5>배경 수정</h5></div>
-                                <input id="inputBanner" name="" placeholder="사진을 불러오세요."/>
-                                <div class="imgSubmit"><a style="cursor:pointer">업로드</a></div>
+                                <input id="inputBanner" type="file" @change="add_image($event, 2)"/>
                             </div>
                             <div id="editProfileImg">
                                 <div class="contentSubTitle"><h5>프로필 수정</h5></div>
-                                <input id="inputProfile" name="" placeholder="사진을 불러오세요."/>
-                                <div class="imgSubmit"><a style="cursor:pointer">업로드</a></div>
+                                <input id="inputProfile" type="file" @change="add_image($event, 1)"/>
                             </div>
                         </div>
                     </div>
                 </div>
                 <div id="editBio">
                     <div class="contentTitle"><h4>자기소개 수정</h4></div>
-                    <input id="inputDescription" name="" v-model = "description" placeholder="자기소개를 입력해주세요."/>
+                    <input id="inputDescription" name="" v-model="description" placeholder="자기소개를 입력해주세요."/>
                 </div>
                 <div id="editBtnWrap">
                     <button id="cancelBtn" class="editBtn" type="button" @click="cancel">취소</button>
-                    <button id="submitBtn" class="editBtn" type="button" @click="edit" style="cursor: pointer">수정</button>
+                    <button id="submitBtn" class="editBtn" type="button" @click="edit()" style="cursor: pointer">수정</button>
                 </div>
             </div>
         </div>
@@ -51,29 +49,69 @@
     export default {
         data() {
             return {
-                nickname: "",
+                username: "",
                 description: "",
+                icon : new FormData(),
+                wallpaper : new FormData(),
+                icon_pk: -1,
+                wallpaper_pk: -1,
+                icon_edited: false,
+                wallpaper_edited: false
             }
         },
         methods: {
             cancel() {
                 this.$router.push('/');
             },
-            edit() {
-                const the_data = {
-                    username: this.nickname,
-                    bio: this.description,
+            async submit() {
+                let user_data = {
+                    username: this.username,
+                    bio: this.description
                 };
-                axios.patch('profile/',the_data)
+                if (this.icon_edited === true) user_data.icon = this.icon_pk;
+                if (this.wallpaper_edited === true) user_data.wallpaper = this.wallpaper_pk;
+
+                await axios.patch('profile/',user_data)
                     .then(()=>{
+                        location.reload();
                         this.$router.push('/');
                     })
+            },
+            add_image(event, id){
+                if (id === 1){
+                    this.icon.append('image', event.target.files[0]);
+                    this.icon_edited = true;
+                }
+                else{
+                    this.wallpaper.append('image', event.target.files[0]);
+                    this.wallpaper_edited = true;
+                }
+            },
+            async submit_image(image, id){
+                await axios.post('addon/image/', image, {
+                    headers:{
+                        'Content-Type': 'multipart/formdata; charset=utf-8;boudnary=${image_boundary}',
+                        'Authorization': 'JWT '+ localStorage.getItem('token')
+                    }
+                }).then((response)=>{
+                        if (id === 1){
+                            this.icon_pk = response.data.id;
+                        }
+                        else{
+                            this.wallpaper_pk = response.data.id;
+                        }
+                    })
+            },
+            async edit() {
+                if (this.icon_edited === true) await this.submit_image(this.icon, 1);
+                if (this.wallpaper_edited === true) await this.submit_image(this.wallpaper, 2);
+                this.submit();
             }
         },
         mounted(){
             axios.get('profile/')
                 .then((response)=>{
-                    this.nickname = response.data.username;
+                    this.username = response.data.username;
                     this.description = response.data.bio;
                 })
         }
@@ -232,15 +270,6 @@
         display: inline-block;
     }
 
-    #editBio {
-        width: 100%; height: auto;
-        margin-top: 3%;
-    }
-
-    #inputDescription {
-        width: 100%;
-    }
-
     #editBtnWrap {
         width: 100%; height: auto;
         margin-top: 2vh;
@@ -268,5 +297,12 @@
         font-size: 12px;
         border-radius: 5px;
     }
+    #editBio {
+        width: 100%; height: auto;
+        margin-top: 3%;
+    }
 
+    #inputDescription {
+        width: 100%;
+    }
 </style>
