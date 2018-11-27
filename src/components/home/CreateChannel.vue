@@ -5,7 +5,7 @@
             <div id="createChannelContent">
                 <div id="channelName">
                     <div class="contentTitle"><h4>실록 이름</h4></div>
-                    <input id="inputName" name="user.name" v-model="user.name" placeholder="이름을 입력하세요." style="cursor: text"/>
+                    <input id="inputName" name="name" v-model="name" placeholder="이름을 입력하세요." style="cursor: text"/>
                 </div>
                 <div id="channelImg">
                     <div class="contentTitle"><h4>프로필 및 배경 사진</h4></div>
@@ -21,25 +21,29 @@
                         <div id="divRight">
                             <div id="selectBanner">
                                 <div class="contentSubTitle"><h5>배경 사진 불러오기</h5></div>
-                                <input id="inputBanner" type="profileImage" placeholder="사진을 불러오세요." style="cursor: text">
-                                <div class="imgSubmit"><a style="cursor: pointer">업로드</a></div>
+                                <input
+                                    id="inputBanner"
+                                    type="file"
+                                    @change="add_image($event, 2)">
                             </div>
                             <div id="selectProfile">
                                <div class="contentSubTitle"><h5>프로필 사진 불러오기</h5></div>
-                                <input id="inputProfile" type="profileImage" placeholder="사진을 불러오세요." style="cursor: text">
-                                <div class="imgSubmit"><a style="cursor: pointer">업로드</a></div>
+                                <input
+                                    id="inputProfile"
+                                    type="file"
+                                    @change="add_image($event, 1)">
                             </div>
                         </div>
                     </div>
                 </div>
                 <div id="channelDescription">
                     <div class="contentTitle"><h4>실록 설명</h4></div>
-                    <input id="inputChannelDescription" name="user.description" v-model="user.description" placeholder="설명을 입력하세요." style="cursor: text"/>
+                    <input id="inputChannelDescription" name="description" v-model="description" placeholder="설명을 입력하세요." style="cursor: text"/>
                 </div>
                 <div id="channelDomain">
                     <div class="contentTitle" id="domainTitle"><h4>실록 도메인</h4></div>
                     <span id="fixedDomain">https://www.sejongsilloc.com/</span>
-                    <input id="inputDomain" name="user.domain" v-model="user.domain" placeholder="영소문자 및 숫자 조합 ex)se1jong" style="cursor: text"/>
+                    <input id="inputDomain" name="domain" v-model="domain" placeholder="영소문자 및 숫자 조합 ex)se1jong" style="cursor: text"/>
                 </div>
                 <div id="channelRule">
                     <div class="contentTitle" id="ruleTitle"><h4>실록 규칙</h4></div>
@@ -51,7 +55,7 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <tr v-for="(rule, id) in user.rules">
+                        <tr v-for="(rule, id) in rules">
                             <td id="inputRuleWrap"><input id="inputRule" type="text" v-model="rule.value" placeholder="규칙을 입력해주세요." style="cursor: text"></td>
                             <td id="deleteBtnWrap">
                                 <div id="deleteBtn"><a id="btnInner" @click="removeElement(id)" style="cursor: pointer">삭제</a></div>
@@ -59,9 +63,9 @@
                         </tr>
                         </tbody>
                     </table>
-                    <div id="addBtn" v-if="this.user.rules.length!==5"><a @click="addRow" style="cursor: pointer">추가</a></div>
+                    <div id="addBtn" v-if="this.rules.length!==5"><a @click="addRow" style="cursor: pointer">추가</a></div>
                 </div>
-                <div id="channelCreateBtnWrap"><button id="channelCreateBtn" type="button" @click="create" style="cursor: pointer">실록 생성</button></div>
+                <div id="channelCreateBtnWrap"><button id="channelCreateBtn" type="button" @click="create()" style="cursor: pointer">실록 생성</button></div>
             </div>
         </div>
     </div>
@@ -73,18 +77,20 @@
     export default {
         data() {
             return {
-                user: {
-                    name : "",
-                    description : "",
-                    domain : "",
-                    rules : [{value: ''}],
-                }
+                name : "",
+                description : "",
+                domain : "",
+                rules : [{value: ''}],
+                icon : new FormData(),
+                wallpaper : new FormData(),
+                icon_pk : -1,
+                wallpaper_pk : -1
             }
         },
         methods: {
             addRow: function() {
-                if(this.user.rules.length<5){
-                    this.user.rules.push({
+                if(this.rules.length<5){
+                    this.rules.push({
                         value: ''
                     });
                 }
@@ -93,29 +99,59 @@
                 }
             },
             removeElement: function(index) {
-                if(this.user.rules.length>1){
-                    this.user.rules.splice(index, 1);
+                if(this.rules.length>1){
+                    this.rules.splice(index, 1);
                 }
                 else{
                     alert('규칙을 하나 이상 입력해주세요!');
                 }
             },
-
-            create() {
-                var ruleStr = this.user.rules[0].value;
-                for(var i=1; i<this.user.rules.length; i++)
-                {
-                    ruleStr += "\\n" + this.user.rules[i].value;
+            add_image(event, id){
+                if (id === 1){
+                    this.icon.append('image', event.target.files[0]);
                 }
-                const the_data = {
-                    name: this.user.name,
-                    description: this.user.description,
-                    slug: this.user.domain,
+                else{
+                    this.wallpaper.append('image', event.target.files[0]);
+                }
+            },
+            async submit_image(image, id){
+                await axios.post('addon/image/', image, {
+                    headers:{
+                        'Content-Type': 'multipart/formdata; charset=utf-8;boudnary=${image_boundary}',
+                        'Authorization': 'JWT '+ localStorage.getItem('token')
+                    }
+                }).then((response)=>{
+                        if (id === 1){
+                            this.icon_pk = response.data.id;
+                        }
+                        else{
+                            this.wallpaper_pk = response.data.id;
+                        }
+                    });
+            },
+            async submit(){
+                const channel_data = {
+                    name: this.name,
+                    description: this.description,
+                    slug: this.domain,
+                    icon: this.icon_pk,
+                    wallpaper: this.wallpaper_pk
                 };
-                axios.post('channel/',the_data)
+                await axios.post('channel/',channel_data)
                     .then(()=>{
                         this.$router.push('/subscription');
                     })
+            },
+            async create() {
+                let ruleStr = this.rules[0].value;
+                for(let i=1; i<this.rules.length; i++)
+                {
+                    ruleStr += "\\n" + this.rules[i].value;
+                }
+
+                await this.submit_image(this.icon, 1);
+                await this.submit_image(this.wallpaper, 2);
+                if (this.icon_pk !== -1 && this.wallpaper_pk !== -1) this.submit();
 
             }
         }
