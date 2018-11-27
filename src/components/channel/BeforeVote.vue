@@ -18,7 +18,6 @@
                 </li>
             </ul>
         </div>
-        {{checked_choices}}
         <button @click="submitVote">투표</button>
 
     </div>
@@ -43,7 +42,7 @@
             submitVote(){
 
                 for(let i=0;i<this.checked_choices.length;i++){
-                     axios.post('/addon/vote/'+this.vote.id+'/'+this.checked_choices[i]+'/')
+                    axios.post('/addon/vote/'+this.vote.id+'/'+this.checked_choices[i]+'/')
                 }
                 this.$emit('vote_submit');
 

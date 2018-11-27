@@ -1,14 +1,18 @@
 <template>
     <div>
         <div>
-            {{vote_result.title}}
-            {{vote_result.description}}
-            {{vote}}}
+            <div>
+                {{vote_result.title}}
+            </div>
+            <div>
+                {{vote_result.description}}
+            </div>
+
 
             <div>
                 <ul>
                     <li v-for="(choice,index) in sortArrays"  v-if="sortUserPick[index]" :class="{isVoted: sortUserPick[index].picked}">
-                         {{choice.id}}. {{choice.content}} {{choice.counts}}
+                        {{choice.content}} {{choice.counts}}
                     </li>
                 </ul>
             </div>
