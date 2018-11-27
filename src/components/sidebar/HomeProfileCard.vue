@@ -3,11 +3,13 @@
         <div id="homeProfileContainer">
             <div id="imgContainer">
                 <div id="bannerWrap">
-                    <img src="../../images/universe.jpg" id="bannerImg"/>
+                    <div v-if="wallpaper_url !== ''"><a :href="wallpaper_url"><img :src="wallpaper_url" class="bannerImg"/></a></div>
+                    <div v-else><img src="../../images/universe.jpg" class="bannerImg"></div>
                 </div>
                 <div id="profileWrap">
                     <div id="profileImgWrap">
-                        <img src="../../images/moon.jpg" id="profileImg"/>
+                        <div v-if="icon_url !== ''"><a :href="icon_url"><img :src="icon_url" class="profileImg"/></a></div>
+                        <div v-else><img src="../../images/moon.jpg" class="profileImg"></div>
                     </div>
                 </div>
             </div>
@@ -25,15 +27,20 @@
         name: "HomeProfileCard",
         data(){
           return{
-              username:'',
+              username: '',
               followers: 0,
+              icon_url: '',
+              wallpaper_url: ''
             }
         },
         mounted(){
             axios.get('profile/')
             .then((response)=>{
+                const base_url = 'https://sejongapi-v2.herokuapp.com';
                 this.username = response.data.username;
                 this.followers = response.data.followed_by;
+                this.icon_url = base_url + response.data.icon.image;
+                this.wallpaper_url = base_url + response.data.wallpaper.image;
             })
         }
     }
@@ -75,7 +82,7 @@
         vertical-align: center;
     }
 
-    #bannerImg{
+    .bannerImg{
         width: 100%;
     }
 
@@ -95,7 +102,7 @@
         vertical-align: center;
     }
 
-    #profileImg{
+    .profileImg{
         width: 100%;
     }
 

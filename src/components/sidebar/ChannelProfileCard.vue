@@ -8,8 +8,8 @@
                 </div>
                 <div id="profileWrap">
                     <div id="profileImgWrap">
-                        <a :href="icon_url"><img :src="icon_url" class="profileImg"/></a>
-                        <img src="../../images/moon.jpg" class="profileImg">
+                        <div v-if="icon_url !== ''"><a :href="icon_url"><img :src="icon_url" class="profileImg"/></a></div>
+                        <div v-else><img src="../../images/moon.jpg" class="profileImg"></div>
                     </div>
                 </div>
             </div>
