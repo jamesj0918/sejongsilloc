@@ -38,15 +38,15 @@
     import ChannelProfileCard from './ChannelProfileCard'
     export default{
         data(){
-          return{
-              channel_info:[],
-              rules: [],
-              user_pk : localStorage.getItem("user_pk"),
-              channel_id: this.$route.params.channelID,
-              user_subscribe: false,
-              channel_subscribers: 0,
-              is_moderator: false
-          }
+            return{
+                channel_info:[],
+                rules: [],
+                user_pk : localStorage.getItem("user_pk"),
+                channel_id: this.$route.params.channelID,
+                user_subscribe: false,
+                channel_subscribers: 0,
+                is_moderator: false,
+            }
         },
         components:{
             'channel-profile-card': ChannelProfileCard,
@@ -94,7 +94,6 @@
             },
             link_dashboard(){
                 this.$router.push({name: 'DashBoard'});
-
             }
         }
     }
