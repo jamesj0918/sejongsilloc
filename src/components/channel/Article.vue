@@ -46,9 +46,8 @@
         <div id="contentWrap">
             <div id="content">{{post.content}}</div>
             <div id="image" >
-
             </div>
-            <div v-if="post.vote!==null">
+            <div v-if="voting_exists">
                 <before-vote v-if="!is_voted"
                              v-on:vote_submit="voteSubmit()"
                              :vote="vote_data"
@@ -107,7 +106,8 @@
                 is_voted: false,
                 vote_result: [],
                 user_pick: [],
-
+                voting_exists: false,
+                load : false,
             }
         },
         components:{
@@ -143,13 +143,16 @@
                     }
                     if(this.upVoted == false){
                         for(var i=0; i<response.data.dislikes_count; i++){
-                            if(response.data.dislikes[i].id == this.user_pk){
-                                this.downVoted = true;
+                            if(response.data.dislikes[i] == this.user_pk){
+                                this.downVoted = true
+                                console.log("hi");
                                 break;
                             }
                         }
                     }
-                    if(response.data.vote !==null){
+
+                    if(response.data.vote.length != 0){
+                        this.voting_exists = true;
                         this.vote_data = response.data.vote[0];
 
                         for(let i = 0;i<this.vote_data.choices.length;i++){
@@ -162,6 +165,7 @@
                         }
 
                     }
+                    this.load = true;
                 })
 
 
