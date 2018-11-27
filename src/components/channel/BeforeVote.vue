@@ -1,6 +1,6 @@
 <template>
-    <div>
-        <h3>투표</h3>
+    <div id="BeforeVote">
+        <div id="beforeVoteTitle"><h4>투표</h4></div>
         <div>{{vote.title}}</div>
         <div>{{vote.description}}</div>
         {{vote.max_responses}}

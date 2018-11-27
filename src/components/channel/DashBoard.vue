@@ -356,7 +356,7 @@
         width: 50px;
         margin-top: 3vh;
     }
-
+    
     @media all and (max-width:720px){
         .channelMenuList {
             width: calc(91.18vw - 155px);
