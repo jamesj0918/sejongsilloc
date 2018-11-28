@@ -74,7 +74,7 @@
     #AfterVote {
         width: 97%; height: auto;
         margin: 0 auto; margin-bottom: 3%; maring-top: 3%;
-        padding: 2% 3%;
+        padding: 3% 3%;
         border-radius: 10px;
         background-color: white;
         box-shadow: 0px 0px 5px 4px rgba(209, 209, 209, 0.5);
@@ -103,7 +103,7 @@
     .voteContent {
         width: calc(100% - 3vh);
         font-size: 1.8vh;
-        font-wieght: bolder;
+        font-weight: bold;
         overflow: hidden;
         white-space: nowrap;
         text-overflow: ellipsis;
