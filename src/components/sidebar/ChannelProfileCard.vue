@@ -73,10 +73,6 @@
             goChannelMain(){
                 this.$router.push('/'+this.id);
             },
-            toggle() {
-                console.log(this.open);
-                this.open = !this.open;
-            },
             show_wallpaper(index) {
                 this.$refs.wallpaper.showImage(index)
             },
