@@ -12,9 +12,9 @@
                 </div>
                 <div v-else>
                     <ul>
-                        <li v-for="(channel, channel_id) in channels">
+                        <li v-for="channel in channels">
                             <div class="resultChannelItem">
-                                <div class="channelImgWrap"><img class="channelImg" src="https://placehold.it/60x60" /></div>
+                                <div class="channelImgWrap"><img class="channelImg" :src="channel.icon.image" /></div>
                                 <div class="channelInfo">
                                     <div class="channelName" @click="gotoChannel(channel.slug)">#{{channel.name}}</div>
                                     <div class="channelDescription">{{channel.description}}</div>
@@ -31,10 +31,13 @@
                 </div>
                 <div v-else>
                     <ul>
-                        <li v-for="(post, post_id) in posts">
+                        <li v-for="post in posts">
                             <div class="resultPostItem">
                                 <div class="postTop">
-                                    <div class="userImgWrap"><img class="userImg" src="https://placehold.it/60x60"/></div>
+                                    <div class="userImgWrap">
+                                        <img v-if="post.author.icon" class="userImg" :src="post.author.icon.image"/>
+                                        <img v-else class="userImg" src="../../images/moon.jpg"/>
+                                    </div>
                                     <div class="postInfo">
                                         <div class="postWriterName" >{{post.author.username}}</div>
                                         <div class="date">{{post.created_at | print_date}}</div>
