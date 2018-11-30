@@ -10,12 +10,14 @@ import VueTextareaAutosize from 'vue-textarea-autosize'
 import VueTabs from 'vue-nav-tabs'
 import 'vue-nav-tabs/themes/vue-tabs.css'
 import Vue2Filters from 'vue2-filters'
+import  VueLazyLoad from 'vue-lazyload'
 
 Vue.use(VueAxios, axios);
 Vue.use(SuiVue);
 Vue.use(VueTextareaAutosize);
 Vue.use(Vue2Filters);
 Vue.use(VueTabs);
+Vue.use(VueLazyLoad);
 
 Vue.config.productionTip = false;
 
