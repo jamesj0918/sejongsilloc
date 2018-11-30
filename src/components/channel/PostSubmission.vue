@@ -12,9 +12,9 @@
                     </div>
                     <div id="contentWrapper">
                         <div id="inputContent">
-                            <textarea placeholder="무슨 생각을 하고 있나요?" v-model="Post.content"/>
+                            <textarea placeholder="무슨 생각을 하고 있나요?" v-model="Post.content"></textarea>
                             <vote-create v-if="vote===true" :bus="bus" :post_pk="post_pk"></vote-create>
-                            <upload-image v-if="image===true"></upload-image>
+                            <upload-image v-if="image===true" :bus="bus" :post_pk="post_pk"></upload-image>
 
                         </div>
                         <div id="articleInputMenu">
@@ -67,7 +67,6 @@
         },
         methods: {
             submit(){
-
                 const post_data={
                     title: this.Post.title,
                     content: this.Post.content,
@@ -85,13 +84,14 @@
                         .then((response) => {
                             this.$router.push('/' + this.channel_id);
                             this.post_pk = response.data.id;
-                            if(this.vote===true){
+                            if (this.vote === true){
                                 this.bus.$emit('createVote',response.data.id);
+                            }
+                            if (this.image === true){
+                                this.bus.$emit('createImage', response.data.id);
                             }
                         })
                 }
-
-
             },
             showVote(){
                 this.vote = true;
@@ -109,7 +109,6 @@
                         }
                     }
                 })
-
         }
     }
 </script>
