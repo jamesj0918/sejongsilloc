@@ -37,7 +37,7 @@
             }
         },
         mounted(){
-          this.bus.$on('createVote',this.createVote);
+          this.bus.$on('createVote', this.createVote);
         },
         methods:{
             addChoice(){
@@ -66,11 +66,9 @@
 
                 axios.post('addon/vote/',vote_data)
                     .then((response)=>{
-
                         const patch_data={
                             vote: [""+response.data.id],
                         };
-
                         axios.patch('post/'+post_id+'/',patch_data)
                     })
             }
