@@ -121,7 +121,7 @@
             async submit_image(image, id){
                 await axios.post('addon/image/', image, {
                     headers:{
-                        'Content-Type': 'multipart/formdata; charset=utf-8;boudnary=${image_boundary}',
+                        'Content-Type': 'multipart/formdata; charset=utf-8;boundary=${image_boundary}',
                         'Authorization': 'JWT '+ localStorage.getItem('token')
                     }
                 }).then((response)=>{
