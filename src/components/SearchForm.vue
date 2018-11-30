@@ -43,6 +43,7 @@
             },
             search(search_data){
                 this.search_data = '';
+                location.reload();
                 this.$router.push({path: '/search', query : {search_data : search_data}});
             }
         }
