@@ -1,14 +1,14 @@
 <template>
     <div id = "homeProfileWrap">
-        <div id="homeProfileContainer">
+        <div id="homeProfileContainer" >
             <div id="imgContainer">
-                <div id="bannerWrap">
-                    <div v-if="wallpaper_url !== ''"><a :href="wallpaper_url"><img :src="wallpaper_url" class="bannerImg"/></a></div>
+                <div id="bannerWrap" style="cursor: pointer" @click="show_wallpaper(0)">
+                    <div v-if="wallpaper_url !== ''"><img :src="wallpaper_url" class="bannerImg"/></div>
                     <div v-else><img src="../../images/universe.jpg" class="bannerImg"></div>
                 </div>
                 <div id="profileWrap">
-                    <div id="profileImgWrap">
-                        <div v-if="icon_url !== ''"><a :href="icon_url"><img :src="icon_url" class="profileImg"/></a></div>
+                    <div id="profileImgWrap" style="cursor: pointer" @click="show_icon(0)">
+                        <div v-if="icon_url !== ''"><img :src="icon_url" class="profileImg"/></div>
                         <div v-else><img src="../../images/moon.jpg" class="profileImg"></div>
                     </div>
                 </div>
@@ -18,30 +18,53 @@
                 <div id="followerWrap"><h4 id="follower">{{followers}}명의 팔로워</h4></div>
             </div>
         </div>
+        <LightBox ref="wallpaper" :show-light-box="false" :images="wallpaper"></LightBox>
+        <LightBox ref="icon" :show-light-box="false" :images="icon"></LightBox>
     </div>
 </template>
 
 <script>
     import axios from 'axios'
+    import LightBox from 'vue-image-lightbox'
+    require('vue-image-lightbox/dist/vue-image-lightbox.min.css');
     export default {
         name: "HomeProfileCard",
+        components: {
+            LightBox
+        },
         data(){
           return{
               username: '',
               followers: 0,
               icon_url: '',
-              wallpaper_url: ''
+              wallpaper_url: '',
+              wallpaper:[],
+              icon:[]
             }
         },
         mounted(){
             axios.get('profile/')
             .then((response)=>{
                 const base_url = 'https://sejongapi-v2.herokuapp.com';
+                const icon_url = base_url + response.data.icon.image;
+                const wallpaper_url = base_url + response.data.wallpaper.image;
+
                 this.username = response.data.username;
                 this.followers = response.data.followed_by;
-                this.icon_url = base_url + response.data.icon.image;
-                this.wallpaper_url = base_url + response.data.wallpaper.image;
-            })
+                this.icon_url = icon_url;
+                this.wallpaper_url = wallpaper_url;
+
+                this.icon.push({src: icon_url, thumb: icon_url});
+                this.wallpaper.push({src: wallpaper_url, thumb: wallpaper_url});
+            });
+        },
+        methods:{
+            show_wallpaper(index) {
+                this.$refs.wallpaper.showImage(index)
+            },
+            show_icon(index) {
+                this.$refs.icon.showImage(index)
+            }
         }
     }
 </script>
@@ -87,10 +110,13 @@
     }
 
     #profileWrap {
-        width: 100%;
+        display: inline-block;
+        width: auto;
+        margin-left: 25%;
         height: 8vw;
         position: relative;
         top: -4vw;
+        border-radius: 50%;
     }
 
     #profileImgWrap {

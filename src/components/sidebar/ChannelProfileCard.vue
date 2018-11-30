@@ -2,28 +2,46 @@
     <div id="wrap">
         <div id="channelProfileContainer">
             <div id="imgContainer">
-                <div id="bannerWrap">
-                    <div v-if="wallpaper_url !== ''"><a :href="wallpaper_url"><img :src="wallpaper_url" class="bannerImg"/></a></div>
+                <div id="bannerWrap" >
+                    <div v-if="wallpaper_url !== ''"><img
+                        style="cursor: pointer; z-index: 200;"
+                        @click="show_wallpaper(0)"
+                        :src="wallpaper_url"
+                        class="bannerImg"/>
+                    </div>
                     <div v-else><img src="../../images/universe.jpg" class="bannerImg"></div>
                 </div>
                 <div id="profileWrap">
                     <div id="profileImgWrap">
-                        <div v-if="icon_url !== ''"><a :href="icon_url"><img :src="icon_url" class="profileImg"/></a></div>
+                        <div v-if="icon_url !== ''">
+                            <img
+                                style="cursor: pointer; z-index: 500;"
+                                @click="show_icon(0)"
+                                :src="icon_url"
+                                class="profileImg"/>
+                        </div>
                         <div v-else><img src="../../images/moon.jpg" class="profileImg"></div>
                     </div>
                 </div>
             </div>
             <div id="informationContainer">
-                    <div id="channelName" @click="goChannelMain" style="cursor: pointer"> <h3 id="name">{{channel_info.name}}</h3></div>
-                    <div ><h4 id="follower">{{subscribers}}명 구독중</h4></div>
+                    <div id="channelName" @click="goChannelMain" style="cursor: pointer">
+                        <h3 id="name">{{channel_info.name}}</h3>
+                    </div>
+                    <div><h4 id="follower">{{subscribers}}명 구독중</h4></div>
             </div>
         </div>
+        <LightBox ref="wallpaper" :show-light-box="false" :images="wallpaper"></LightBox>
+        <LightBox ref="icon" :show-light-box="false" :images="icon"></LightBox>
     </div>
 </template>
 
 <script>
     import axios from 'axios'
+    import LightBox from 'vue-image-lightbox'
+    require('vue-image-lightbox/dist/vue-image-lightbox.min.css');
     export default {
+        components: {LightBox},
         props: ['subscribers'],
         name: "ChannelProfileCard",
         data(){
@@ -31,21 +49,39 @@
                 channel_info: [],
                 id: this.$route.params.channelID,
                 icon_url : '',
-                wallpaper_url: ''
+                wallpaper_url: '',
+                icon: [],
+                wallpaper: []
             }
         },
         mounted(){
             axios.get('channel/'+this.id+'/')
             .then((response)=>{
                 const base_url = 'https://sejongapi-v2.herokuapp.com';
+                const icon_url = base_url + response.data.icon.image;
+                const wallpaper_url = base_url + response.data.wallpaper.image;
+
                 this.channel_info = response.data;
-                this.icon_url = base_url + response.data.icon.image;
-                this.wallpaper_url = base_url + response.data.wallpaper.image;
+                this.icon_url = icon_url;
+                this.wallpaper_url = wallpaper_url;
+
+                this.icon.push({src: icon_url, thumb: icon_url});
+                this.wallpaper.push({src: wallpaper_url, thumb: wallpaper_url});
             })
         },
         methods:{
             goChannelMain(){
                 this.$router.push('/'+this.id);
+            },
+            toggle() {
+                console.log(this.open);
+                this.open = !this.open;
+            },
+            show_wallpaper(index) {
+                this.$refs.wallpaper.showImage(index)
+            },
+            show_icon(index) {
+                this.$refs.icon.showImage(index)
             }
         }
     }
@@ -91,10 +127,13 @@
     }
 
     #profileWrap {
-        width: 100%;
+        display: inline-block;
+        width: auto;
+        margin-left: 25%;
         height: 8vw;
         position: relative;
         top: -4vw;
+        border-radius: 50%;
     }
 
     #profileImgWrap {
@@ -108,6 +147,7 @@
 
     .profileImg {
         width: 100%;
+        border-radius: 50%;
     }
 
     #informationContainer{
@@ -124,6 +164,7 @@
         font-weight: bolder;
         margin-bottom: 2%;
     }
+
 
     @media all and (max-width:1024px){
         #informationContainer {
