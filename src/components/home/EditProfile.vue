@@ -11,10 +11,12 @@
                     <div class="contentTitle"><h4>프로필 및 배경 사진 수</h4></div>
                     <div id="editImgContent">
                         <div id="divLeft">
-                            <div id="bannerImgWrap"></div>
+                            <div id="bannerImgWrap">
+                                <img :src="wallpaper_preview" id="wallpaperImg">
+                            </div>
                             <div id="profileWrap">
                                 <div id="profileImgWrap">
-                                    <img src="" id="profileImg"/>
+                                    <img :src="icon_preview" id="profileImg"/>
                                 </div>
                             </div>
                         </div>
@@ -56,7 +58,9 @@
                 icon_pk: -1,
                 wallpaper_pk: -1,
                 icon_edited: false,
-                wallpaper_edited: false
+                wallpaper_edited: false,
+                icon_preview: "",
+                wallpaper_preview: ""
             }
         },
         methods: {
@@ -80,10 +84,12 @@
             add_image(event, id){
                 if (id === 1){
                     this.icon.append('image', event.target.files[0]);
+                    this.icon_preview = URL.createObjectURL(event.target.files[0]);
                     this.icon_edited = true;
                 }
                 else{
                     this.wallpaper.append('image', event.target.files[0]);
+                    this.wallpaper_preview = URL.createObjectURL(event.target.files[0]);
                     this.wallpaper_edited = true;
                 }
             },
@@ -227,6 +233,10 @@
     }
 
     #profileImg {
+        width: 100%; height: 100%;
+    }
+
+    #wallpaperImg{
         width: 100%; height: 100%;
     }
 
