@@ -11,7 +11,33 @@
                     type="pills"
                 >
                     <v-tab title="프로필 및 배경사진" class="channelMenuList">
-                        <div class="contentTitle">사진 변경 (아직 안됨)</div>
+                        <div class="contentTitle">
+                            <div id="editImg">
+                                <div class="contentTitle"></div>
+                                <div id="editImgContent">
+                                    <div id="divLeft">
+                                        <div id="bannerImgWrap">
+                                            <!-- 우진아 이거 추가해야돼<img :src="wallpaper_preview" id="wallpaperImg">-->
+                                        </div>
+                                        <div id="profileWrap">
+                                            <div id="profileImgWrap">
+                                                <!--우진아 이거 추가해야돼<img :src="icon_preview" id="profileImg"/>-->
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div id="divRight">
+                                        <div id="editBanner">
+                                            <div class="contentSubTitle"><h5>배경 수정</h5></div>
+                                            <input id="inputBanner" type="file" @change="add_image($event, 2)"/>
+                                        </div>
+                                        <div id="editProfileImg">
+                                            <div class="contentSubTitle"><h5>프로필 수정</h5></div>
+                                            <input id="inputProfile" type="file" @change="add_image($event, 1)"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </v-tab>
                     <v-tab title="실록 이름" class="channelMenuList">
                         <div class="contentTitle">실록 이름 변경</div>
@@ -73,7 +99,7 @@
                 </vue-tabs>
             </div>
             <div id="BtnWrap">
-                <button id="submitBtn" style="cursor:pointer" @click="update_channel()"> 적용 </button>
+                <button id="submitBtn" style="cursor:pointer" @click="edit()"> 적용 </button>
             </div>
         </div>
     </div>
@@ -91,6 +117,14 @@
                 channel_subscribers: [],
                 channel_blacklist: [],
                 channel_moderators: [],
+                icon : new FormData(),
+                wallpaper : new FormData(),
+                icon_pk: -1,
+                wallpaper_pk: -1,
+                icon_edited: false,
+                wallpaper_edited: false,
+                icon_preview: "",
+                wallpaper_preview: "",
             }
         },
         mounted(){
@@ -112,10 +146,14 @@
                     moderators: [],
                     blacklist: []
                 };
+                if (this.icon_edited === true) channel_data.icon = this.icon_pk;
+                if (this.wallpaper_edited === true) channel_data.wallpaper = this.wallpaper_pk;
+
                 this.convert_array(channel_data.subscribers, this.channel_subscribers);
                 this.convert_array(channel_data.moderators, this.channel_moderators);
                 this.convert_array(channel_data.blacklist, this.channel_blacklist);
                 axios.patch('channel/'+this.$route.params.channelID+'/', channel_data);
+                location.reload();
                 this.$router.replace('/'+this.$route.params.channelID);
             },
             delete_from_array(array, id){
@@ -138,6 +176,38 @@
             },
             add_to_blacklist(subscriber){
                 this.channel_blacklist.push(subscriber);
+            },
+            add_image(event, id){
+                if (id === 1){
+                    this.icon.append('image', event.target.files[0]);
+                    this.icon_preview = URL.createObjectURL(event.target.files[0]);
+                    this.icon_edited = true;
+                }
+                else{
+                    this.wallpaper.append('image', event.target.files[0]);
+                    this.wallpaper_preview = URL.createObjectURL(event.target.files[0]);
+                    this.wallpaper_edited = true;
+                }
+            },
+            async submit_image(image, id){
+                await axios.post('addon/image/', image, {
+                    headers:{
+                        'Content-Type': 'multipart/formdata; charset=utf-8;boudnary=${image_boundary}',
+                        'Authorization': 'JWT '+ localStorage.getItem('token')
+                    }
+                }).then((response)=>{
+                    if (id === 1){
+                        this.icon_pk = response.data.id;
+                    }
+                    else{
+                        this.wallpaper_pk = response.data.id;
+                    }
+                })
+            },
+            async edit() {
+                if (this.icon_edited === true) await this.submit_image(this.icon, 1);
+                if (this.wallpaper_edited === true) await this.submit_image(this.wallpaper, 2);
+                this.update_channel();
             }
         },
     }
