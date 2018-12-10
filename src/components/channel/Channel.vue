@@ -127,7 +127,6 @@
         mounted(){
             axios.get('post/?slug='+this.channel_id)
                 .then((response)=> {
-                    console.log(response);
                     if(response.data.length == 0) {
                         this.answer = '빈 실록입니다.';
                         return;

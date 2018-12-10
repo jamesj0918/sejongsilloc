@@ -145,7 +145,6 @@
                         for(var i=0; i<response.data.dislikes_count; i++){
                             if(response.data.dislikes[i] == this.user_pk){
                                 this.downVoted = true
-                                console.log("hi");
                                 break;
                             }
                         }
