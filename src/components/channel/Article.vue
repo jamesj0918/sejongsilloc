@@ -45,9 +45,10 @@
         </div>
         <div id="contentWrap">
             <div id="content">{{post.content}}</div>
-            <div id="image" >
+            <div id="image" v-if="existence_of_image === true" >
+                <image-view :image_data = image_list></image-view>
             </div>
-            <div v-if="voting_exists">
+            <div v-if="existence_of_vote===true">
                 <before-vote v-if="!is_voted"
                              v-on:vote_submit="voteSubmit()"
                              :vote="vote_data"
@@ -83,6 +84,7 @@
     import axios from 'axios'
     import BeforeVote from './BeforeVote'
     import AfterVote from './AfterVote'
+    import ImageView from './ImageView'
     export default {
         name: "Article",
         data() {
@@ -103,16 +105,20 @@
                 submission_date: [],
                 submission_time: [],
                 vote_data: '',
-                is_voted: false,
-                vote_result: [],
+                is_voted: false, // 투표 여부
+                existence_of_vote: false,
+                existence_of_image: false,
+                vote_result: null,
                 user_pick: [],
                 voting_exists: false,
                 load : false,
+                image_list: [],
             }
         },
         components:{
             'before-vote': BeforeVote,
             'after-vote': AfterVote,
+            'image-view': ImageView,
         },
         created() {
             axios.get('post/' + this.postID + '/')
@@ -143,15 +149,14 @@
                     }
                     if(this.upVoted == false){
                         for(var i=0; i<response.data.dislikes_count; i++){
-                            if(response.data.dislikes[i] == this.user_pk){
-                                this.downVoted = true
+                            if(response.data.dislikes[i].id == this.user_pk){
+                                this.downVoted = true;
                                 break;
                             }
                         }
                     }
 
-                    if(response.data.vote.length != 0){
-                        this.voting_exists = true;
+                    if(response.data.vote.length !== 0){
                         this.vote_data = response.data.vote[0];
 
                         for(let i = 0;i<this.vote_data.choices.length;i++){
@@ -160,9 +165,16 @@
                                     if(response.data.find(c => c.id == this.user_pk)){
                                         this.is_voted = true;
                                     }
+                                    this.existence_of_vote = true;
                                 })
                         }
 
+                    }
+
+                    if(response.data.image.length !== 0){
+                        this.image_list = response.data.image;
+                        this.existence_of_image = true;
+                        console.log(this.image_list);
                     }
                     this.load = true;
                 })
@@ -524,6 +536,9 @@
             display: inline-block;
             float: left;
             line-height: 35px;
+        }
+        #image{
+            width: 100%;
         }
     }
 </style>
