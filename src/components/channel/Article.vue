@@ -46,7 +46,7 @@
         <div id="contentWrap">
             <div id="content">{{post.content}}</div>
             <div id="image" v-if="existence_of_image === true" >
-                <image-view :image_data = image_list></image-view>
+                <image-view :images = image_list></image-view>
             </div>
             <div v-if="existence_of_vote===true">
                 <before-vote v-if="!is_voted"
