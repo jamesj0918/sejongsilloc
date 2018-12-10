@@ -11,10 +11,12 @@
                     <div class="contentTitle"><h4>프로필 및 배경 사진</h4></div>
                     <div id="channelImgContent">
                         <div id="divLeft">
-                            <div id="bannerImgWrap"></div>
+                            <div id="bannerImgWrap">
+                                <img :src="wallpaper_preview" id="wallpaperImg">
+                            </div>
                             <div id="profileWrap">
                                 <div id="profileImgWrap">
-                                    <img src="" id="profileImg"/>
+                                    <img :src="icon_preview" id="profileImg"/>
                                 </div>
                             </div>
                         </div>
@@ -86,7 +88,9 @@
                 icon_pk : -1,
                 wallpaper_pk : -1,
                 icon_edited: false,
-                wallpaper_edited: false
+                wallpaper_edited: false,
+                icon_preview: "",
+                wallpaper_preview: ""
             }
         },
         methods: {
@@ -112,10 +116,12 @@
                 if (id === 1){
                     this.icon.append('image', event.target.files[0]);
                     this.icon_edited = true;
+                    this.icon_preview = URL.createObjectURL(event.target.files[0]);
                 }
                 else{
                     this.wallpaper.append('image', event.target.files[0]);
                     this.wallpaper_edited = true;
+                    this.wallpaper_preview = URL.createObjectURL(event.target.files[0]);
                 }
             },
             async submit_image(image, id){
