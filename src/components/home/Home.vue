@@ -66,6 +66,7 @@
         mounted(){
             axios.get('post/?subscribed=1')
                 .then((response)=> {
+                    console.log(response);
                     if(response.data.length == 0) return;
                     this.empty = false;
 

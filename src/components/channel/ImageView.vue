@@ -17,7 +17,7 @@
             return{
                 url: 'https://sejongapi-v2.herokuapp.com',
             }
-        }
+        },
     }
 </script>
 

@@ -84,6 +84,7 @@
     import axios from 'axios'
     import BeforeVote from './BeforeVote'
     import AfterVote from './AfterVote'
+    import ImageView from './ImageView'
     export default {
         name: "Article",
         data() {
@@ -117,6 +118,7 @@
         components:{
             'before-vote': BeforeVote,
             'after-vote': AfterVote,
+            'image-view': ImageView,
         },
         created() {
             axios.get('post/' + this.postID + '/')
@@ -191,13 +193,11 @@
             },
 
             upvote() {
-
                 if (this.downVoted == true){
                     axios.delete('post/' + this.postID + '/dislike/')
                         .then(()=>{
                             this.downCount --;
                         })
-
                 }
                 if(this.upVoted == false) {
                     axios.post('post/' + this.postID + '/like/')
@@ -535,8 +535,6 @@
             float: left;
             line-height: 35px;
         }
-        #image{
-            width: 100%;
-        }
+
     }
 </style>
