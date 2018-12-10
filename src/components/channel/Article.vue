@@ -84,7 +84,6 @@
     import axios from 'axios'
     import BeforeVote from './BeforeVote'
     import AfterVote from './AfterVote'
-    import ImageView from './ImageView'
     export default {
         name: "Article",
         data() {
@@ -111,17 +110,17 @@
                 vote_result: null,
                 user_pick: [],
                 image_list: [],
+                voting_exists: false,
+                load : false,
             }
         },
         components:{
             'before-vote': BeforeVote,
             'after-vote': AfterVote,
-            'image-view': ImageView,
         },
         created() {
             axios.get('post/' + this.postID + '/')
                 .then((response) => {
-                    console.log(response);
                     this.post = response.data;
                     this.username = response.data.author.username;
                     this.upCount = response.data.likes;
@@ -148,8 +147,8 @@
                     }
                     if(this.upVoted == false){
                         for(var i=0; i<response.data.dislikes_count; i++){
-                            if(response.data.dislikes[i].id == this.user_pk){
-                                this.downVoted = true;
+                            if(response.data.dislikes[i] == this.user_pk){
+                                this.downVoted = true
                                 break;
                             }
                         }
@@ -175,6 +174,7 @@
                         this.existence_of_image = true;
                         console.log(this.image_list);
                     }
+                    this.load = true;
                 })
 
 

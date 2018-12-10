@@ -10,7 +10,8 @@
         <div id = "contents" @click="closeNav">
           <router-view></router-view>
         </div>
-      <div id = "rank">
+      <div id = "rankNaviLayout">
+        <rank-navi id="rankNavi"></rank-navi>
       </div>
     </div>
   </div>
@@ -19,11 +20,13 @@
 <script>
     import SearchForm from './SearchForm'
     import Sidebar from './sidebar/SidebarLayout.vue'
+    import RankNavi from './rank/RankNavi.vue'
 
     export default {
         components: {
             'search-form' : SearchForm,
             'sidebar' : Sidebar,
+            'rank-navi' : RankNavi,
         },
         methods: {
             closeNav(){
@@ -73,14 +76,24 @@
   width: 60%;
   height: 100%;
 }
-  #rank{
+  #rankNaviLayout{
 
     display:inline-block;
     width: 20%;
     height: 100%;
     float: right;
+  }
+
+  #rankNavi{
+    display: inline-block;
+    width :80%;
+    margin-top: 10vh;
+
+    height: 200px;
+    border:1px solid;
 
   }
+
     @media all and (max-width:640px){
         #body{
             width: 100%;

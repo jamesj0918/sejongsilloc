@@ -72,7 +72,7 @@
                 </ul>
             </div>
         <div id="noArticle" v-else>
-            <h3>빈 실록입니다!</h3>
+            <h3>{{answer}}</h3>
         </div>
     </div>
 </template>
@@ -84,11 +84,11 @@
         data(){
             return{
                 sort: [
-                    {key: 'fav', value: 'fav', text:'인기'},
-                    {key: 'com', value: 'com', text:'댓글'},
+                    {key: 'fav', value: 'fav', text:'화제'},
                     {key: 'new', value: 'new', text:'최신'},
                 ],
-                current: 'fav',
+                answer: '불러오는 중...',
+                current: 'new',
                 posts: [],
                 pinned_post: [],
                 empty: true,
@@ -103,22 +103,36 @@
                 this.$router.push(this.channel_id+"/"+object);
             }
         },
-        mounted(){
-            axios.get('post/')
-                .then((response)=> {
-                    if(response.data.length == 0) return;
-                    this.empty = false;
-                    for(var i = 0;i<response.data.length;i++){
-                        if(this.channel_id == response.data[i].channel.slug){
-                            if(response.data[i].pinned == true){
-                                this.pinned_post.push(response.data[i])
+        watch:{
+            current: function(){
+                this.empty = true;
+                this.posts=[];
+                if(this.current === 'fav'){
+                    axios.get('post/?slug='+this.channel_id+'&ordering=-score')
+                        .then((response)=>{
 
-                            }
-                            else{
-                                this.posts.push(response.data[i]);
-                            }
-                        }
+                            this.posts = response.data;
+                            this.empty = false;
+                        })
+                }
+                if(this.current === 'new'){
+                    axios.get('post/?slug'+this.channel_id)
+                        .then((response)=>{
+                            this.posts = response.data;
+                            this.empty = false;
+                        })
+                }
+            }
+        },
+        mounted(){
+            axios.get('post/?slug='+this.channel_id)
+                .then((response)=> {
+                    if(response.data.length == 0) {
+                        this.answer = '빈 실록입니다.';
+                        return;
                     }
+                    this.empty = false;
+                    this.posts = response.data;
 
                 })
         }
@@ -177,6 +191,7 @@
         width: 44px; height: 28px;
         display: inline-block;
         float: left;
+        z-index: 1000;
     }
 
     #sort {

@@ -8,7 +8,7 @@
                     <input id="inputName" name="username" v-model="username" placeholder="닉네임을 입력하세요."/>
                 </div>
                 <div id="editImg">
-                    <div class="contentTitle"><h4>프로필 및 배경 사진 수</h4></div>
+                    <div class="contentTitle"><h4>프로필 및 배경 사진 수정</h4></div>
                     <div id="editImgContent">
                         <div id="divLeft">
                             <div id="bannerImgWrap">

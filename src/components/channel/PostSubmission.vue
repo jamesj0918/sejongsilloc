@@ -2,7 +2,6 @@
         <div id="PostSubmissionWrap">
             <div id="writingPostHeader">
                 <h3>실록 기록하기</h3>
-                {{vote}}
                 <span id="channelName">#{{channelName}}</span>
             </div>
             <div id="inputWrapper">
@@ -11,14 +10,14 @@
                         <input id="inputTitle" placeholder="제목을 입력해주세요." type="text" v-model="Post.title"/>
                     </div>
                     <div id="contentWrapper">
-                        <div id="inputContent">
-                            <textarea placeholder="무슨 생각을 하고 있나요?" v-model="Post.content"></textarea>
+                        <div id="inputContentWrap">
+                            <textarea-autosize id="inputContent" placeholder="무슨 생각을 하고 있나요?" v-model="Post.content"></textarea-autosize>
                             <vote-create v-if="vote===true" :bus="bus" :post_pk="post_pk"></vote-create>
                             <upload-image v-if="image===true" :bus="bus" :post_pk="post_pk"></upload-image>
 
                         </div>
                         <div id="articleInputMenu">
-                            <span id="addVote" @click="showVote()"><i class="archive icon"></i></span>
+                            <span id="addVote" @click="showVote()"><i class="archive icon" style="cursor:pointer"></i></span>
                             <span id="addVideo"><i class="video icon"></i></span>
                             <span id="addPhoto" @click="image=!image"><i class="camera icon"></i></span>
                             <span v-if="is_moderator === true" id="toPinned">
@@ -227,9 +226,14 @@
         border-width: 2px;
     }
 
-    #inputContent{
+    #inputContentWrap{
         width: 100%; height: calc(100% - 30px);
         font-size: 14px;
+        overflow-y: scroll;
+    }
+
+    #inputContent {
+        width: 100%;
     }
 
     #articleInputMenu{
