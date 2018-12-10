@@ -170,7 +170,6 @@
                         }
 
                     }
-
                     if(response.data.image.length !== 0){
                         this.image_list = response.data.image;
                         this.existence_of_image = true;
