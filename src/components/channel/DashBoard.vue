@@ -17,11 +17,11 @@
                                 <div id="editImgContent">
                                     <div id="divLeft">
                                         <div id="bannerImgWrap">
-                                            <!-- 우진아 이거 추가해야돼<img :src="wallpaper_preview" id="wallpaperImg">-->
+                                            <img :src="wallpaper_preview" id="wallpaperImg">
                                         </div>
                                         <div id="profileWrap">
                                             <div id="profileImgWrap">
-                                                <!--우진아 이거 추가해야돼<img :src="icon_preview" id="profileImg"/>-->
+                                                <img :src="icon_preview" id="profileImg"/>
                                             </div>
                                         </div>
                                     </div>
@@ -281,7 +281,7 @@
     }
 
     #channelManaging {
-        height: calc(164px + 4vh);
+        height: calc(250px + 4vh);
         margin-top: 1.5vh;
         border: 1px solid #c4c4c4;
         border-radius: 5px;
@@ -297,7 +297,7 @@
     }
 
     #channelTabWrap {
-        width: 100%; height: 162px;
+        width: 100%; height: 250px;
         font-size: 1.4vh;
         font-weight: bold;
     }
@@ -313,6 +313,70 @@
         margin-bottom: 1.5%;
         font-size: 1.4vh;
         font-weight: bolder;
+    }
+
+    #divLeft {
+        width:14vw; height: 14vw;
+        border: solid; border-width: 1px; border-color: rgba(229, 229, 229, 1);
+        border-radius: 7px;
+        overflow: hidden;
+        float: left;
+    }
+
+    #bannerImgWrap {
+        width: 100%; height: 7vw;
+        position: relative;
+        overflow: hidden;
+        background-color: rgba(229, 229, 229, 1);
+        vertical-align: center;
+    }
+
+    #profileWrap {
+        width: 100%; height: 7vw;
+        position: relative;
+        top: -3.5vw;
+    }
+
+    #profileImgWrap {
+        width: 7vw; height: 7vw;
+        margin: 0 auto;
+        border-radius: 50%;
+        overflow: hidden;
+    }
+
+    #profileImg {
+        width: 100%; height: 100%;
+    }
+
+    #wallpaperImg{
+        width: 100%; height: 100%;
+    }
+
+    #divRight {
+        width: calc(100% - 14vw - 2px); height: auto;
+        float: left;
+        padding: 1% 0;
+        padding-left: 5%;
+    }
+
+    #editBanner {
+        margin-bottom: 6%;
+    }
+
+    .contentSubTitle {
+        margin-bottom: 1%;
+    }
+
+    #inputBanner {
+        width: 100%;
+        color: #5b5b5b;
+        display: inline-block;
+    }
+
+    #inputProfile {
+        width: 100%;
+        color: #5b5b5b;
+        display: inline-block;
     }
 
     #channelNameInput {
