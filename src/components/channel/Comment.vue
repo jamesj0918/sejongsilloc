@@ -97,7 +97,6 @@
                 this.comments=[];
                 axios.get('comment/?post='+this.postID+'&page='+this.comments_page)
                     .then((response)=>{
-                        console.log(response);
                         this.comments_length=response.data.results.length;
                         for(var i=0;i<response.data.results.length;i++){
                             if(response.data.results[i].parent == null){

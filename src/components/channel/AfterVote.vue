@@ -37,7 +37,6 @@
             afterVote(){
                 axios.get('addon/vote/'+this.vote.id+'/')
                     .then((response)=>{
-                        console.log(response);
                         this.vote_result = response.data;
                         for(let i = 0;i<this.vote_result.choices.length;i++){
                             axios.get('addon/vote/'+this.vote_result.id+'/'+this.vote_result.choices[i].id+'/responder/?page='+this.vote_page)

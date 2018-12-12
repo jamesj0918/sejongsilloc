@@ -166,7 +166,6 @@
 
                                     axios.get('addon/vote/' + this.vote_data.id + '/' + this.vote_data.choices[i].id + '/responder/?page=' + this.vote_page)
                                         .then((response) => {
-                                            console.log(response);
                                             if (response.data.results.find(c => c.id == this.user_pk)) {
                                                 this.is_voted = true;
                                                 this.vote_page_end = true;

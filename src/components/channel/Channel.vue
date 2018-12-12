@@ -112,7 +112,6 @@
                                 this.answer = '빈 실록입니다.';
                                 return;
                             }
-                            console.log(response);
                             this.empty = false;
 
                             for(let i = 0; i<response.data.results.length; i++){

@@ -31,7 +31,7 @@
                 </ul>
             </div>
             <div id="noArticle" v-else>
-                <h3>빈 실록입니다!</h3>
+                <h3>{{alert}}</h3>
             </div>
         </div>
     </div>
@@ -54,6 +54,7 @@
                 empty: true,
                 channel_id: this.$route.params.channelID,
                 page: 1,
+                alert: '불러오는 중...',
             }
         },
         methods:{
@@ -66,8 +67,10 @@
             get_data(){
                 axios.get('post/?subscribed=1&ordering=-created_at&page='+this.page)
                     .then((response)=> {
-                        console.log(response);
-                        if(response.data.results.length == 0) return;
+                        if(response.data.results.length == 0) {
+                            this.alert="게시글이 없습니다.";
+                            return;
+                        }
                         this.empty = false;
 
                         for(let i = 0;i<response.data.results.length;i++){

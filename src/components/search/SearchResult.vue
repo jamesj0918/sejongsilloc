@@ -85,7 +85,6 @@
             getChannelSearch(){
                 axios.get('channel/?search='+this.search_data+'&page='+this.channel_page)
                     .then((response)=>{
-                        console.log(response);
                         for(let i=0;i<response.data.results.length;i++){
                             this.channels.push(response.data.results[i]);
                         }
