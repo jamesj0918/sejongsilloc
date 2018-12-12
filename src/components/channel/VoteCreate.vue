@@ -38,7 +38,7 @@
             }
         },
         mounted(){
-          this.bus.$on('createVote', this.createVote);
+          this.$bus.$on('createVote', this.createVote);
         },
         methods:{
             addChoice(){
@@ -55,6 +55,7 @@
                 this.choices.splice(index,1)
             },
             createVote(post_id){
+                console.log("hi createVote");
                 if(this.overlab === false){
                     this.choice_count = 1;
                 }
@@ -67,6 +68,7 @@
 
                 axios.post('addon/vote/',vote_data)
                     .then((response)=>{
+                        console.log(response);
                         const patch_data={
                             vote: [""+response.data.id],
                         };

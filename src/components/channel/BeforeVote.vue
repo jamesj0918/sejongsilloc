@@ -9,11 +9,21 @@
             <ul>
                 <li v-for="(choice,index) in sortArrays">
                     <div class="container">
+
                         <input class="voteCheck"
+                               v-if="max_responses !== 1"
                                type="checkbox"
+                               :name="index"
                                :id="index"
                                :value="choice.id"
-                               v-model="checked_choices">
+                               v-model="checked_choices"/>
+                        <input class="voteCheck"
+                               v-else
+                               type="radio"
+                               name="vote"
+                               :id="index"
+                               :value="choice.id"
+                               v-model="checked_choices"/>
                         <div class="voteList" >
                             <label :for="index" class="labelWrap" style="cursor: pointer">
                                 <div class="checkWrap"><i class="check icon"></i></div>
@@ -40,14 +50,15 @@
                 vote_title: '',
                 vote_description: '',
                 checked_choices:[],
+                max_responses: 1,
             }
         },
         mounted(){
-
+            console.log(this.vote);
+            this.max_responses = this.vote.max_responses;
         },
         methods:{
             submitVote(){
-
                 for(let i=0;i<this.checked_choices.length;i++){
                     axios.post('/addon/vote/'+this.vote.id+'/'+this.checked_choices[i]+'/')
                         .then((response)=>{

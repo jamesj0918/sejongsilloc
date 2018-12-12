@@ -82,10 +82,10 @@
                     axios.post('/post/', post_data)
                         .then((response) => {
                             this.$router.push('/' + this.channel_id);
-                            location.reload();
+
                             this.post_pk = response.data.id;
                             if (this.vote === true){
-                                this.bus.$emit('createVote',response.data.id);
+                                this.$bus.$emit('createVote',response.data.id);
                             }
                             if (this.image === true){
                                 this.bus.$emit('createImage', response.data.id);
