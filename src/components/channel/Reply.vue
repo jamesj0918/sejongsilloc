@@ -57,6 +57,7 @@
                 writer: [],
                 reply_submission_date: [],
                 reply_submission_time: [],
+                reply_page: 1,
                 comments: [],
                 user_pk: localStorage.getItem("user_pk"),
             }
@@ -67,12 +68,12 @@
         methods:{
             getComment(){
                 this.reply_list=[];
-                axios.get('comment/?post='+this.postID+'&parent='+this.parent)
+                axios.get('comment/?post='+this.postID+'&parent='+this.parent+'&page='+this.reply_page)
                     .then((response)=>{
-                        this.reply_list = response.data;
-                        for(var i=0; i<response.data.length; i++){
-                            this.reply_submission_date.push(response.data[i].created_at.split('T')[0].replace(/-/g, "."));
-                            this.reply_submission_time.push(response.data[i].created_at.split('T')[1].split('.')[0]);
+                        this.reply_list = response.data.results;
+                        for(var i=0; i<response.data.results.length; i++){
+                            this.reply_submission_date.push(response.data.results[i].created_at.split('T')[0].replace(/-/g, "."));
+                            this.reply_submission_time.push(response.data.results[i].created_at.split('T')[1].split('.')[0]);
                         }
                     })
             },

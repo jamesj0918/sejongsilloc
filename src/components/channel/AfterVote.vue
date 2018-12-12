@@ -26,25 +26,32 @@
                 vote_result: [],
                 user_pick: [],
                 user_pick_sort: [],
+                vote_page: 1,
                 user_pk: localStorage.getItem("user_pk"),
             }
         },
         mounted(){
-            axios.get('addon/vote/'+this.vote.id+'/')
-                .then((response)=>{
-                    this.vote_result = response.data;
-                    for(let i = 0;i<this.vote_result.choices.length;i++){
-                        axios.get('addon/vote/'+this.vote_result.id+'/'+this.vote_result.choices[i].id+'/responder/')
-                            .then((response)=>{
-                                if(response.data.find(c => c.id == this.user_pk)){
-                                    this.user_pick.push({id: this.vote_result.choices[i].id, picked: true});
-                                }
-                                else{
-                                    this.user_pick.push({id: this.vote_result.choices[i].id, picked: false});
-                                }
-                            })
-                    }
-                });
+            this.afterVote();
+        },
+        methods:{
+            afterVote(){
+                axios.get('addon/vote/'+this.vote.id+'/')
+                    .then((response)=>{
+                        console.log(response);
+                        this.vote_result = response.data;
+                        for(let i = 0;i<this.vote_result.choices.length;i++){
+                            axios.get('addon/vote/'+this.vote_result.id+'/'+this.vote_result.choices[i].id+'/responder/?page='+this.vote_page)
+                                .then((response)=>{
+                                    if(response.data.results.find(c => c.id == this.user_pk)){
+                                        this.user_pick.push({id: this.vote_result.choices[i].id, picked: true});
+                                    }
+                                    else{
+                                        this.user_pick.push({id: this.vote_result.choices[i].id, picked: false});
+                                    }
+                                })
+                        }
+                    });
+            }
         },
         computed:{
             sortArrays: function() {

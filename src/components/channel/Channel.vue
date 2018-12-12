@@ -93,6 +93,7 @@
                 pinned_post: [],
                 empty: true,
                 channel_id: this.$route.params.channelID,
+                page: 1,
             }
         },
         methods:{
@@ -101,41 +102,64 @@
             },
             postView(object){
                 this.$router.push(this.channel_id+"/"+object);
+            },
+            get_data(){
+
+                if(this.current === 'fav'){
+                    axios.get('post/?slug='+this.channel_id+'&page='+this.page+'&ordering=-score')
+                        .then((response)=> {
+                            if(response.data.results.length == 0 && this.page==1) {
+                                this.answer = '빈 실록입니다.';
+                                return;
+                            }
+                            console.log(response);
+                            this.empty = false;
+
+                            for(let i = 0; i<response.data.results.length; i++){
+                                this.posts.push(response.data.results[i])
+                            }
+                            this.page++;
+
+                        })
+                }
+                if(this.current === 'new'){
+                    axios.get('post/?ordering=-created_at&slug='+this.channel_id+'&page='+this.page)
+                        .then((response)=> {
+                            if(response.data.results.length == 0 && this.page==1) {
+                                this.answer = '빈 실록입니다.';
+                                return;
+                            }
+                            console.log(response);
+                            this.empty = false;
+
+                            for(let i = 0; i<response.data.results.length; i++){
+                                this.posts.push(response.data.results[i])
+                            }
+                            this.page++;
+
+                        })
+                }
+
             }
         },
         watch:{
             current: function(){
                 this.empty = true;
                 this.posts=[];
-                if(this.current === 'fav'){
-                    axios.get('post/?slug='+this.channel_id+'&ordering=-score')
-                        .then((response)=>{
-
-                            this.posts = response.data;
-                            this.empty = false;
-                        })
-                }
-                if(this.current === 'new'){
-                    axios.get('post/?slug'+this.channel_id)
-                        .then((response)=>{
-                            this.posts = response.data;
-                            this.empty = false;
-                        })
-                }
+                this.page=1;
+                this.get_data();
             }
         },
         mounted(){
-            axios.get('post/?slug='+this.channel_id)
-                .then((response)=> {
-                    if(response.data.length == 0) {
-                        this.answer = '빈 실록입니다.';
-                        return;
-                    }
-                    console.log(response);
-                    this.empty = false;
-                    this.posts = response.data;
 
-                })
+            const listElm1 = document.querySelector('#ChannelWrap');
+            listElm1.addEventListener( 'scroll',e =>{
+                if(listElm1.scrollTop + listElm1.clientHeight >= listElm1.scrollHeight) {
+                    this.get_data();
+                }
+            });
+
+            this.get_data();
         }
     }
 </script>

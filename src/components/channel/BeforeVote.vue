@@ -50,8 +50,15 @@
 
                 for(let i=0;i<this.checked_choices.length;i++){
                     axios.post('/addon/vote/'+this.vote.id+'/'+this.checked_choices[i]+'/')
+                        .then((response)=>{
+                            console.log(response);
+                            if(i == this.checked_choices.length-1){
+                                this.$emit('vote_submit');
+                            }
+                        })
                 }
-                this.$emit('vote_submit');
+
+
 
             }
         },

@@ -64,20 +64,15 @@
                 search_data : this.$route.query.search_data,
                 channels: [],
                 posts: [],
+                channel_page: 1,
+                post_page: 1,
             }
         },
 
         mounted(){
-            axios.get('channel/?search='+this.search_data)
-                .then((response)=>{
-                    this.channels=response.data;
-                });
+            this.getChannelSearch();
 
-            axios.get('post/?search='+this.search_data)
-                .then((response)=>{
-                    this.posts = response.data;
-                });
-
+            this.getPostSearch();
         },
 
         methods:{
@@ -86,6 +81,23 @@
             },
             gotoPost(channel_slug, post_pk){
                 this.$router.push('/'+channel_slug+'/'+post_pk);
+            },
+            getChannelSearch(){
+                axios.get('channel/?search='+this.search_data+'&page='+this.channel_page)
+                    .then((response)=>{
+                        console.log(response);
+                        for(let i=0;i<response.data.results.length;i++){
+                            this.channels.push(response.data.results[i]);
+                        }
+                    });
+            },
+            getPostSearch(){
+                axios.get('post/?search='+this.search_data+'&page='+this.post_page)
+                    .then((response)=>{
+                        for(let i=0;i<response.data.results.length;i++){
+                            this.posts.push(response.data.results[i]);
+                        }
+                    });
             }
         },
 

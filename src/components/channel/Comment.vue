@@ -81,7 +81,7 @@
                 hide: true,
                 submission_date: [],
                 submission_time: [],
-
+                comments_page: 1,
             }
         },
         created(){
@@ -90,19 +90,21 @@
         },
         mounted(){
             this.getComment();
+            this.hide=false;
         },
         methods:{
             getComment(){
                 this.comments=[];
-                axios.get('comment/?post='+this.postID)
+                axios.get('comment/?post='+this.postID+'&page='+this.comments_page)
                     .then((response)=>{
-                        this.comments_length=response.data.length;
-                        for(var i=0;i<response.data.length;i++){
-                            if(response.data[i].parent == null){
-                                this.comments.push(response.data[i]);
-                                this.author_id.push(response.data[i].author.id);
-                                this.submission_date.push(response.data[i].created_at.slice(0,10));
-                                this.submission_time.push(response.data[i].created_at.slice(11,16));
+                        console.log(response);
+                        this.comments_length=response.data.results.length;
+                        for(var i=0;i<response.data.results.length;i++){
+                            if(response.data.results[i].parent == null){
+                                this.comments.push(response.data.results[i]);
+                                this.author_id.push(response.data.results[i].author.id);
+                                this.submission_date.push(response.data.results[i].created_at.slice(0,10));
+                                this.submission_time.push(response.data.results[i].created_at.slice(11,16));
                             }
                         }
                     })
@@ -124,7 +126,7 @@
                 axios.post('comment/', comment_data)
                     .then((response)=>{
                         this.reply='';
-                        this.comments_ㅣength++;
+                        this.comments_length++;
                         this.comments.push(response.data);
                         this.author_id.push(response.data.author.id);
                         this.submission_date.push(response.data.created_at.slice(0,10));

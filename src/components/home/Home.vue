@@ -1,9 +1,9 @@
 <template>
     <div id="Home">
         <div id="HomeWrap">
-            <div id="postList" v-if="!empty">
+            <div id="postList" v-if="!empty" class="home-post-list">
                 <ul>
-                    <li v-for = "Post in posts.slice().reverse()" class="post">
+                    <li v-for = "Post in posts" class="post">
                         <div class="postWrap">
                             <div class="postHeader">
                                 <span class="name">
@@ -53,6 +53,7 @@
                 pinned_post: [],
                 empty: true,
                 channel_id: this.$route.params.channelID,
+                page: 1,
             }
         },
         methods:{
@@ -61,19 +62,30 @@
             },
             postView(post_pk, channel_pk){
                 this.$router.push(channel_pk+"/"+post_pk);
+            },
+            get_data(){
+                axios.get('post/?subscribed=1&ordering=-created_at&page='+this.page)
+                    .then((response)=> {
+                        console.log(response);
+                        if(response.data.results.length == 0) return;
+                        this.empty = false;
+
+                        for(let i = 0;i<response.data.results.length;i++){
+                            this.posts.push(response.data.results[i]);
+                        }
+                        this.page++;
+                    })
             }
         },
         mounted(){
-            axios.get('post/?subscribed=1')
-                .then((response)=> {
-                    console.log(response);
-                    if(response.data.length == 0) return;
-                    this.empty = false;
+            const listElm1 = document.querySelector('#Home');
+            listElm1.addEventListener( 'scroll',e =>{
+                if(listElm1.scrollTop + listElm1.clientHeight >= listElm1.scrollHeight) {
+                    this.get_data();
+                }
+            });
+            this.get_data();
 
-                    for(let i = 0;i<response.data.length;i++){
-                        this.posts.push(response.data[i]);
-                    }
-                })
         }
     }
 </script>

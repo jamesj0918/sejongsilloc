@@ -113,6 +113,8 @@
                 image_list: [],
                 voting_exists: false,
                 load : false,
+                vote_page: 1,
+                vote_page_end: false,
             }
         },
         components:{
@@ -123,6 +125,7 @@
         created() {
             axios.get('post/' + this.postID + '/')
                 .then((response) => {
+                    console.log(response);
                     this.post = response.data;
                     this.username = response.data.author.username;
                     this.upCount = response.data.likes;
@@ -158,17 +161,28 @@
 
                     if(response.data.vote.length !== 0){
                         this.vote_data = response.data.vote[0];
-
+                        this.existence_of_vote = true;
                         for(let i = 0;i<this.vote_data.choices.length;i++){
-                            axios.get('addon/vote/'+this.vote_data.id+'/'+this.vote_data.choices[i].id+'/responder/')
-                                .then((response)=>{
-                                    if(response.data.find(c => c.id == this.user_pk)){
-                                        this.is_voted = true;
-                                    }
-                                    this.existence_of_vote = true;
-                                })
-                        }
+                            this.vote_page_end = false;
 
+                                    axios.get('addon/vote/' + this.vote_data.id + '/' + this.vote_data.choices[i].id + '/responder/?page=' + this.vote_page)
+                                        .then((response) => {
+                                            console.log(response);
+                                            if (response.data.results.find(c => c.id == this.user_pk)) {
+                                                this.is_voted = true;
+                                                this.vote_page_end = true;
+                                            }
+                                            else {
+                                                if (response.data.next == null) {
+                                                    this.vote_page = 0;
+                                                    this.vote_page_end = true;
+                                                }
+                                                else {
+                                                    this.vote_page++;
+                                                }
+                                            }
+                                        })
+                        }
                     }
 
                     if(response.data.image.length !== 0){
