@@ -46,7 +46,7 @@
         <div id="contentWrap">
             <div id="content">{{post.content}}</div>
             <div id="image" v-if="existence_of_image === true" >
-                <image-view :image_data = image_list></image-view>
+                <image-view :images = image_list></image-view>
             </div>
             <div v-if="existence_of_vote===true">
                 <before-vote v-if="!is_voted"
@@ -110,9 +110,9 @@
                 existence_of_image: false,
                 vote_result: null,
                 user_pick: [],
-                image_list: [],
                 voting_exists: false,
                 load : false,
+                image_list: [],
                 vote_page: 1,
                 vote_page_end: false,
             }
@@ -125,7 +125,6 @@
         created() {
             axios.get('post/' + this.postID + '/')
                 .then((response) => {
-                    console.log(response);
                     this.post = response.data;
                     this.username = response.data.author.username;
                     this.upCount = response.data.likes;
@@ -153,7 +152,7 @@
                     if(this.upVoted == false){
                         for(var i=0; i<response.data.dislikes_count; i++){
                             if(response.data.dislikes[i] == this.user_pk){
-                                this.downVoted = true
+                                this.downVoted = true;
                                 break;
                             }
                         }
@@ -184,7 +183,6 @@
                                         })
                         }
                     }
-
                     if(response.data.image.length !== 0){
                         this.image_list = response.data.image;
                         this.existence_of_image = true;
@@ -549,6 +547,8 @@
             float: left;
             line-height: 35px;
         }
-
+        #image{
+            width: 100%;
+        }
     }
 </style>
