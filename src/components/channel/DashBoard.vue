@@ -49,7 +49,7 @@
                     <v-tab title="실록 규칙" class="channelMenuList">
                         <div class="contentTitle" id="ruleTitle"><h4>실록 규칙</h4></div>
                             <div v-for="(rule, id) in rules">
-                                <input type="text" v-model="rules[id]"  placeholder="규칙을 입력해주세요." style="cursor: text">
+                                <input class="inputRule" type="text" v-model="rules[id]"  placeholder="규칙을 입력해주세요." style="cursor: text">
                                 <div id="deleteBtnWrap">
                                     <div id="deleteBtn1"><a id="btnInner" @click="removeElement(id)" style="cursor: pointer">삭제</a></div>
                                 </div>
@@ -239,6 +239,15 @@
         cursor: default;
         font-family: "Noto Sans KR";
     }
+    a {
+        text-decoration: none;
+        color: white;
+    }
+
+    a:hover {
+        text-decoration: none;
+        color: white;
+    }
 
     input {
         outline: 0;
@@ -403,6 +412,47 @@
 
     #channelDescriptionInput {
         width: 100%;
+    }
+
+    .inputRule {
+        width: calc(100% - 53px);
+        margin-bottom: 5px;
+    }
+
+    #deleteBtnWrap {
+        width: 50px;
+        display: inline-block;
+        float: right;
+    }
+
+    #deleteBtn {
+        width: 50px; height: auto;
+        text-align: center;
+        padding: 2px;
+        font-size: 11px;
+        font-weight: bold;
+        background-color: white;
+        border-radius: 5px;
+        display: inline-block;
+    }
+
+    #btnInner {
+        color: #8c151f;
+        font-size: 13px;
+        font-weight: bolder;
+    }
+
+    #addBtn {
+        width: 50px; height: auto;
+        text-align: center;
+        margin-top: 0.5%;
+        padding: 2px;
+        font-size: 11px;
+        font-weight: bold;
+        background-color: #8c151f;
+        color: white;
+        border-radius: 5px;
+        display: inline-block;
     }
 
     #subscriberManaging {

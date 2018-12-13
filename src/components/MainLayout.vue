@@ -77,7 +77,6 @@
   height: 100%;
 }
   #rankNaviLayout{
-
     display:inline-block;
     width: 20%;
     height: 100%;
@@ -86,12 +85,12 @@
 
   #rankNavi{
     display: inline-block;
-    width :80%;
+    width :80%; height: auto;
     margin-top: 10vh;
-
-    height: 200px;
-    border:1px solid;
-
+    padding: 5px 0;
+    border: solid 1px rgba(196, 196, 196, 0.5);
+    border-radius: 7px;
+    background-color: white;
   }
 
     @media all and (max-width:640px){
@@ -110,7 +109,7 @@
             backface-visibility: hidden;
             z-index: 1000;
         }
-        #rank{
+        #rankNavi{
             display: none;
         }
     }
