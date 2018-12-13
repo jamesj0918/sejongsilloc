@@ -5,7 +5,7 @@
             <div id="homeMenuBtn">
                 <div id="logoWrap" @click="link_home" style="cursor:pointer">
                     <div id="logo">
-                        LOGO
+                        <img src="../images/logo_search_bar_white.png">
                     </div>
                 </div>
                 <div id="menuToggle" style="cursor:pointer" @click="openNav()">
@@ -119,7 +119,7 @@
 
     }
     #logo {
-        margin-top: 1.5vh;
+        
         height: 100%;
         font-size: 30px;
         text-align: center;
