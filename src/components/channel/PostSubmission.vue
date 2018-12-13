@@ -14,8 +14,8 @@
                             <textarea-autosize id="inputContent" placeholder="무슨 생각을 하고 있나요?" v-model="Post.content"></textarea-autosize>
                             <vote-create v-show="vote===true" :bus="bus" :post_pk="post_pk"></vote-create>
                             <upload-image v-show="image===true" :bus="bus" :post_pk="post_pk"></upload-image>
-
                         </div>
+
                         <div id="articleInputMenu">
                             <span id="addVote" @click="vote = !vote"><i class="archive icon" style="cursor:pointer"></i></span>
                             <span id="addVideo"><i class="video icon"></i></span>

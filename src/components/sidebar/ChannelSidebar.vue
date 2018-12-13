@@ -54,7 +54,6 @@
         mounted(){
             axios.get('channel/'+this.channel_id)
                 .then((response)=>{
-                    console.log(response);
                     for(let i=0;i<response.data.subscribers.length;i++){
                         if(response.data.subscribers[i].id == this.user_pk){
                             this.user_subscribe = true;

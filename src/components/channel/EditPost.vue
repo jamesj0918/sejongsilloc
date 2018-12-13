@@ -9,9 +9,12 @@
                 <input id="inputTitle" placeholder="제목을 입력해주세요" type="text" v-model="Post.title" style="cursor:text"/>
             </div>
             <div id="contentWrapper">
-                <textarea id="inputContent" placeholder="무슨 생각을 하고 있나요?" v-model="Post.content" style="cursor:text"></textarea>
+                <div id="inputContentWrap">
+                    <textarea-autosize id="inputContent" placeholder="무슨 생각을 하고 있나요?" v-model="Post.content" style="cursor:text"></textarea-autosize>
+                    <edit-vote v-show="vote===true" :bus="bus" :post_pk="postID" :vote_data="vote_data"></edit-vote>
+                </div>
                 <div id="articleInputMenu">
-                    <span id="addVote"><i class="archive icon"></i></span>
+                    <span id="addVote" ><i class="archive icon"></i></span>
                     <span id="addVideo"><i class="video icon"></i></span>
                     <span id="addPhoto"><i class="camera icon"></i></span>
                     <span id="toPinned">
@@ -29,7 +32,9 @@
 </template>
 
 <script>
+    import EditVote from './EditVote'
     import axios from 'axios'
+    import Vue from 'vue'
     export default {
         name: "EditPost",
         data(){
@@ -41,8 +46,14 @@
                 },
                 channelID: this.$route.params.channelID,
                 postID: this.$route.params.postID,
-                channelName: ""
+                channelName: "",
+                vote: false,
+                vote_data: [],
+                bus: new Vue(),
             }
+        },
+        components:{
+            'edit-vote': EditVote,
         },
         methods: {
             submit(){
@@ -62,17 +73,30 @@
                     axios.patch('post/'+this.postID+'/', Post_data)
                         .then(() => {
                             this.$router.push('/' + this.channelID);
+                            if(this.vote === true){
+                                this.bus.$emit('patchVote');
+                            }
                         })
+
+
+
                 }
             }
         },
         mounted() {
             axios.get('post/'+this.postID+'/')
                 .then((response) => {
+                    console.log(response);
                     this.Post.title = response.data.title;
                     this.Post.content = response.data.content;
                     this.Post.is_pinned = response.data.pinned;
+                    this.post_pk = response.data.id;
                     this.channelName = response.data.channel_name;
+                    if(response.data.vote != null){
+                        this.vote = true;
+                        this.vote_data = response.data.vote[0];
+                        console.log(response.data.vote[0])
+                    }
                 })
         }
     }
@@ -147,6 +171,12 @@
         background-color: white;
         border-radius: 10px;
 
+    }
+
+    #inputContentWrap{
+        width: 100%; height: calc(100% - 30px);
+        font-size: 14px;
+        overflow-y: scroll;
     }
 
     #channelName {

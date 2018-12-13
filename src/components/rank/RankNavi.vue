@@ -1,7 +1,7 @@
 <template>
-    <div id="RankNavi">
-        <div id="rankTitle">
-            <h4>추천 실록</h4>
+    <div>
+        <div>
+            <h3>추천 실록</h3>
         </div>
         <div>
             <ul>
@@ -35,11 +35,9 @@
         mounted(){
             axios.get('channel/?page=1')
                 .then((response)=>{
-                    console.log(response);
                     for(let i=0;i<4;i++){
                         this.channel_list.push(response.data.results[i]);
                     }
-                    console.log(this.channel_list);
                 })
         },//mounted
         methods: {

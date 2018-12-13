@@ -119,7 +119,7 @@
 
     }
     #logo {
-        
+
         height: 100%;
         font-size: 30px;
         text-align: center;

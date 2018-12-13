@@ -46,7 +46,6 @@
         mounted(){
             axios.get('profile/')
             .then((response)=>{
-                console.log(response);
                 const base_url = 'https://sejongapi-v2.herokuapp.com';
                 if(response.data.icon!== null){
                     this.icon_url = base_url + response.data.icon.image;
