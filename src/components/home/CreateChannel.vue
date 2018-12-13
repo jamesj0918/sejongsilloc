@@ -58,7 +58,7 @@
                         </thead>
                         <tbody>
                         <tr v-for="(rule, id) in rules">
-                            <td id="inputRuleWrap"><input id="inputRule" type="text" v-model="rule.value" placeholder="규칙을 입력해주세요." style="cursor: text"></td>
+                            <td id="inputRuleWrap"><input id="inputRule" type="text" v-model="rule.content" placeholder="규칙을 입력해주세요." style="cursor: text"></td>
                             <td id="deleteBtnWrap">
                                 <div id="deleteBtn"><a id="btnInner" @click="removeElement(id)" style="cursor: pointer">삭제</a></div>
                             </td>
@@ -75,14 +75,13 @@
 
 <script>
     import axios from 'axios'
-
     export default {
         data() {
             return {
                 name : "",
                 description : "",
                 domain : "",
-                rules : [{value: ''}],
+                rules : [{content: ''}],
                 icon : new FormData(),
                 wallpaper : new FormData(),
                 icon_pk : -1,
@@ -97,7 +96,7 @@
             addRow: function() {
                 if(this.rules.length<5){
                     this.rules.push({
-                        value: ''
+                        content: ""
                     });
                 }
                 else {
@@ -143,7 +142,8 @@
                 const channel_data = {
                     name: this.name,
                     description: this.description,
-                    slug: this.domain
+                    slug: this.domain,
+                    rules: this.rules,
                 };
                 if (this.icon_edited === true) channel_data.icon = this.icon_pk;
                 if (this.wallpaper_edited === true) channel_data.wallpaper = this.wallpaper_pk;
@@ -159,7 +159,6 @@
                 {
                     ruleStr += "\\n" + this.rules[i].value;
                 }
-
                 if (this.icon_edited === true) await this.submit_image(this.icon, 1);
                 if (this.wallpaper_edited === true) await this.submit_image(this.wallpaper, 2);
                 this.submit();

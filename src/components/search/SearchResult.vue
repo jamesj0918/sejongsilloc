@@ -7,7 +7,7 @@
             </div>
             <div id="resultChannel">
                 <div id="resultChannelTitle">실록</div>
-                <div v-if="channels.length === 0" class="nullContent">
+                <div v-if="channel_result === false" class="nullContent">
                     <h4>검색결과가 존재하지 않습니다.</h4>
                 </div>
                 <div v-else>
@@ -26,7 +26,7 @@
             </div>
             <div id="resultPost">
                 <div id="resultPostTitle">게시물</div>
-                <div v-if="posts.length === 0" class="nullContent">
+                <div v-if="post_result == false" class="nullContent">
                     <h4>검색결과가 존재하지 않습니다.</h4>
                 </div>
                 <div v-else>
@@ -66,12 +66,13 @@
                 posts: [],
                 channel_page: 1,
                 post_page: 1,
+                channel_result: false,
+                post_result: false,
             }
         },
 
-        mounted(){
+        created(){
             this.getChannelSearch();
-
             this.getPostSearch();
         },
 
@@ -85,8 +86,11 @@
             getChannelSearch(){
                 axios.get('channel/?search='+this.search_data+'&page='+this.channel_page)
                     .then((response)=>{
+                        console.log(response);
                         for(let i=0;i<response.data.results.length;i++){
+                            console.log(response.data.results[i]);
                             this.channels.push(response.data.results[i]);
+                            this.channel_result = true;
                         }
                     });
             },
@@ -95,7 +99,9 @@
                     .then((response)=>{
                         for(let i=0;i<response.data.results.length;i++){
                             this.posts.push(response.data.results[i]);
+                            this.post_result = true;
                         }
+
                     });
             }
         },

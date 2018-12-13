@@ -8,8 +8,7 @@
                     direction="vertical"
                     active-tab-color="darkGray"
                     active-text-color="white"
-                    type="pills"
-                >
+                    type="pills">
                     <v-tab title="프로필 및 배경사진" class="channelMenuList">
                         <div class="contentTitle">
                             <div id="editImg">
@@ -48,7 +47,14 @@
                         <input id="channelDescriptionInput" v-model="channel_description" style="cursor: text">
                     </v-tab>
                     <v-tab title="실록 규칙" class="channelMenuList">
-                        <div class="contentTitle">규칙 (아직 안됨)</div>
+                        <div class="contentTitle" id="ruleTitle"><h4>실록 규칙</h4></div>
+                            <div v-for="(rule, id) in rules">
+                                <input type="text" v-model="rules[id]"  placeholder="규칙을 입력해주세요." style="cursor: text">
+                                <div id="deleteBtnWrap">
+                                    <div id="deleteBtn1"><a id="btnInner" @click="removeElement(id)" style="cursor: pointer">삭제</a></div>
+                                </div>
+                            </div>
+                        <div id="addBtn" v-if="this.rules.length!==5"><a @click="addRow()" style="cursor: pointer" >추가</a></div>
                     </v-tab>
                 </vue-tabs>
             </div>
@@ -58,8 +64,7 @@
                     direction="vertical"
                     active-tab-color="darkGray"
                     active-text-color="white"
-                    type="pills"
-                >
+                    type="pills">
                     <v-tab title="구독자 목록" class="subscriberMenuList">
                         <div v-if="channel_subscribers.length === 0">
                             <div class="noData">구독자가 없어용 ㅎㅎ 너무 아쉽네 ;-;</div>
@@ -125,11 +130,14 @@
                 wallpaper_edited: false,
                 icon_preview: "",
                 wallpaper_preview: "",
+                rules: []
             }
         },
         mounted(){
             axios.get('channel/'+this.$route.params.channelID+'/')
                 .then((response)=>{
+                    console.log(response);
+                    this.rules = response.data.rules;
                     this.channel_name = response.data.name;
                     this.channel_description = response.data.description;
                     this.channel_subscribers = response.data.subscribers.slice();
@@ -155,6 +163,16 @@
                 axios.patch('channel/'+this.$route.params.channelID+'/', channel_data);
                 location.reload();
                 this.$router.replace('/'+this.$route.params.channelID);
+            },
+            addRow: function() {
+                if(this.rules.length<5){
+                    this.rules.push({
+                        content: ""
+                    });
+                }
+                else {
+                    alert('규칙은 최대 5개까지 입력 가능합니다.');
+                }
             },
             delete_from_array(array, id){
                 if (array === this.channel_moderators && array.length === 1) alert('관리자가 최소 1명은 있어야 합니다.');
@@ -481,6 +499,16 @@
         width: 80px;
         margin-left: 1%;
     }
+    #deleteBtn1 {
+        width: 50px; height: auto;
+        text-align: center;
+        padding: 2px;
+        font-size: 11px;
+        font-weight: bold;
+        background-color: white;
+        border-radius: 5px;
+        display: inline-block;
+    }
 
     #BtnWrap {
         height: 50px;
@@ -490,7 +518,7 @@
         width: 50px;
         margin-top: 3vh;
     }
-    
+
     @media all and (max-width:720px){
         .channelMenuList {
             width: calc(91.18vw - 155px);

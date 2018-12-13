@@ -44,7 +44,7 @@
         name: "SubscriptionList",
         data(){
           return{
-
+              subscription_page: 1,
               channel_list: [],
           }
         },
@@ -52,12 +52,17 @@
             enterChannel(object){
                 this.$router.push('/'+object);
             },
+            getData(){
+                axios.get('channel/?subscribed=1&page='+this.subscription_page)
+                    .then((response)=>{
+                        for(let i=0;i<response.data.results.length;i++){
+                            this.channel_list.push(response.data.results[i]);
+                        }
+                    })
+            }
         },
         mounted(){
-            axios.get('channel/?subscribed=1')
-                .then((response)=>{
-                    this.channel_list = response.data;
-                })
+            this.getData();
         }
     }
 </script>
