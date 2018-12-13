@@ -85,9 +85,10 @@
 
   #rankNavi{
     display: inline-block;
-    width :80%; height: auto;
+    width :90%; height: auto;
     margin-top: 10vh;
-    padding: 5px 0;
+    margin-left: 10%;
+    padding-top: 10px;
     border: solid 1px rgba(196, 196, 196, 0.5);
     border-radius: 7px;
     background-color: white;

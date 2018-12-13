@@ -11,8 +11,8 @@
             <h4 id="channelRuleTitle">실록 규칙</h4>
             <div id="channelRuleListWrap">
                 <ol>
-                    <li v-for="rule in rules">
-                        {{rule}}
+                    <li v-for="(rule,id) in rules">
+                        {{rules[id]}}
                     </li>
                 </ol>
             </div>
@@ -66,7 +66,10 @@
                             break;
                         }
                     }
-                    this.rules = response.data.rules;
+
+                    for(let i = 0; i<response.data.rules.length;i++){
+                        this.rules.push(response.data.rules[i]);
+                    }
                     this.channel_info = response.data;
                     this.channel_subscribers = response.data.subscribers.length;
                 })

@@ -49,7 +49,7 @@
                     <v-tab title="실록 규칙" class="channelMenuList">
                         <div class="contentTitle" id="ruleTitle"><h4>실록 규칙</h4></div>
                             <div v-for="(rule, id) in rules">
-                                <input class="inputRule" type="text" v-model="rules[id]"  placeholder="규칙을 입력해주세요." style="cursor: text">
+                                <input class="inputRule" type="text" v-model="rules[id].content"  placeholder="규칙을 입력해주세요." style="cursor: text">
                                 <div id="deleteBtnWrap">
                                     <div id="deleteBtn1"><a id="btnInner" @click="removeElement(id)" style="cursor: pointer">삭제</a></div>
                                 </div>
@@ -137,12 +137,19 @@
             axios.get('channel/'+this.$route.params.channelID+'/')
                 .then((response)=>{
                     console.log(response);
-                    this.rules = response.data.rules;
+                    //this.rules = response.data.rules;
                     this.channel_name = response.data.name;
                     this.channel_description = response.data.description;
                     this.channel_subscribers = response.data.subscribers.slice();
                     this.channel_blacklist = response.data.blacklist.slice();
                     this.channel_moderators = response.data.moderators.slice();
+
+                    for(let i=0;i<response.data.rules.length;i++){
+                        this.rules.push({
+                            content: response.data.rules[i]
+                        })
+                    }
+
                 });
         },
         methods: {
@@ -152,7 +159,8 @@
                     description: this.channel_description,
                     subscribers: [],
                     moderators: [],
-                    blacklist: []
+                    blacklist: [],
+                    rules: this.rules,
                 };
                 if (this.icon_edited === true) channel_data.icon = this.icon_pk;
                 if (this.wallpaper_edited === true) channel_data.wallpaper = this.wallpaper_pk;
@@ -163,6 +171,14 @@
                 axios.patch('channel/'+this.$route.params.channelID+'/', channel_data);
                 location.reload();
                 this.$router.replace('/'+this.$route.params.channelID);
+            },
+            removeElement(index){
+                if(this.rules.length>1){
+                    this.rules.splice(index, 1);
+                }
+                else{
+                    alert('규칙을 하나 이상 입력해주세요!');
+                }
             },
             addRow: function() {
                 if(this.rules.length<5){

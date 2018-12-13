@@ -1,18 +1,18 @@
 <template>
-    <div>
-        <div>
+    <div id="rankNaviWrap">
+        <div style="padding-left: 4%;">
             <h3>추천 실록</h3>
         </div>
-        <div>
+        <div style="padding-left : 4%;">
             <ul>
-                <li v-for="(channel,id) in channel_list" @click="link_to_channel(channel.slug)">
+                <li v-for="(channel,id) in channel_list"  @click="link_to_channel(channel.data.slug)">
                     <div class="rankWrap">
-                        <div class="channelInfo">
-                            <div class="channelName" style="cursor: pointer">{{channel_list[id].name}}</div>
-                            <div class="channelSubscriber">{{channel_list[id].subscribers.length}}명 구독중</div>
+                        <div class="channelInfo" style="cursor: pointer">
+                            <div class="channelName" style="cursor: pointer">{{channel_list[id].data.name}}</div>
+                            <div class="channelSubscriber" style="cursor: pointer" >{{channel_list[id].data.subscribers.length}}명 구독중</div>
                         </div>
                         <div class="BtnWrap">
-                            <button class="subBtn" style="cursor: pointer"> 구독하기</button>
+                            <button class="subBtn" style="cursor: pointer" > 방문하기</button>
                         </div>
                     </div>
                 </li>
@@ -36,13 +36,16 @@
             axios.get('channel/?page=1')
                 .then((response)=>{
                     for(let i=0;i<4;i++){
-                        this.channel_list.push(response.data.results[i]);
+                        this.channel_list.push({
+                            data: response.data.results[i] , subscription: false
+                    });
                     }
                 })
         },//mounted
         methods: {
             link_to_channel(object){
                 this.$router.push('/'+object);
+                location.reload();
             }
         }
 
@@ -77,15 +80,6 @@
 
     button:focus {
         outline: none;
-    }
-
-    #RankNavi {
-        width: 100%; height: 100%;
-    }
-
-    #rankTitle {
-        margin: 7px;
-        color: rgba(60, 60, 60 ,1);
     }
 
     .rankWrap {
@@ -131,5 +125,12 @@
 
     .subBtn {
         white-space: nowrap;
+    }
+
+    .gray{
+        background-color: rgb(180,180,180);
+    }
+    #rankNaviWrap{
+        padding-left: 10px;
     }
 </style>
