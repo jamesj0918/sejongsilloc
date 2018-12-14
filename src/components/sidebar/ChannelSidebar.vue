@@ -4,7 +4,7 @@
             <channel-profile-card :subscribers=channel_subscribers></channel-profile-card>
         </div>
         <div id="channelDescriptionWrap">
-            <h5 id="channelDescriptionTitle">실록 설명</h5>
+            <h4 id="channelDescriptionTitle">실록 설명</h4>
             <div id="channelDescription">{{channel_info.description}}</div>
         </div>
         <div id="channelRuleWrap">
@@ -12,16 +12,14 @@
             <div id="channelRuleListWrap">
                 <ol>
                     <li v-for="rule in rules">
-
                         {{rule}}
-
                     </li>
                 </ol>
             </div>
         </div>
         <div id="channelBtn">
             <div class="buttonWrap">
-                <button>실록 수정</button>
+                <button v-if="is_moderator === true" @click="link_dashboard()">실록 수정</button>
             </div>
             <div class="buttonWrap">
                 <button v-if="!user_subscribe" @click="subscribe">구독 하기</button>
@@ -40,14 +38,15 @@
     import ChannelProfileCard from './ChannelProfileCard'
     export default{
         data(){
-          return{
-              channel_info:[],
-              rules: [],
-              user_pk : localStorage.getItem("user_pk"),
-              channel_id: this.$route.params.channelID,
-              user_subscribe: false,
-              channel_subscribers: 0,
-          }
+            return{
+                channel_info:[],
+                rules: [],
+                user_pk : localStorage.getItem("user_pk"),
+                channel_id: this.$route.params.channelID,
+                user_subscribe: false,
+                channel_subscribers: 0,
+                is_moderator: false,
+            }
         },
         components:{
             'channel-profile-card': ChannelProfileCard,
@@ -55,12 +54,16 @@
         mounted(){
             axios.get('channel/'+this.channel_id)
                 .then((response)=>{
-                    console.log(response);
-
-                    //this.rules = response.data.rules.split("\\n");
-                    for(var i=0;i<response.data.subscribers.length;i++){
+                    for(let i=0;i<response.data.subscribers.length;i++){
                         if(response.data.subscribers[i].id == this.user_pk){
                             this.user_subscribe = true;
+                            break;
+                        }
+                    }
+                    for(let i=0; i<response.data.moderators.length; i++){
+                        if(response.data.moderators[i].id == this.user_pk){
+                            this.is_moderator = true;
+                            break;
                         }
                     }
                     this.channel_info = response.data;
@@ -70,26 +73,27 @@
                     alert("잘못된 접근입니다.");
                     this.$router.push('/');
                 });
-
-
         },
         methods:{
             subscribe(){
                 axios.post('channel/'+this.channel_id+'/subscribe/')
-                    .then((response)=>{
+                    .then(()=>{
                         this.user_subscribe = true;
-                        this.channel_subscribers = response.data.subscribers.length;
+                        this.channel_subscribers++;
                     })
             },
             unsubscribe(){
                 axios.delete('channel/'+this.channel_id+'/subscribe/')
-                    .then((response)=>{
+                    .then(()=>{
                         this.user_subscribe = false;
-                        this.channel_subscribers = response.data.subscribers.length;
+                        this.channel_subscribers--;
                     })
                     .catch(()=>{
                         alert("관리자는 구독을 취소할 수 없습니다.");
                     })
+            },
+            link_dashboard(){
+                this.$router.push({name: 'DashBoard'});
             }
         }
     }
@@ -100,6 +104,7 @@
     *{
         margin: 0;
         padding: 0;
+        cursor: default;
     }
 
     ol {
@@ -126,6 +131,7 @@
 
     #channelDescriptionTitle {
         color: #8c151f;
+        font-weight: bold;
     }
 
     #channelDescription {

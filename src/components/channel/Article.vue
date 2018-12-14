@@ -20,15 +20,15 @@
                             </a>
                             </li>
                             <li class="dropdownMenuItem"><a style="cursor:pointer">
-                                <div class="dropdownMenuLink" @click="toEdit()"><i class="edit icon"></i><span>수정</span></div>
+                                <div class="dropdownMenuLink" @click="toEdit()" v-if="post.author.id == user_pk"><i class="edit icon"></i><span>수정</span></div>
                             </a>
                             </li>
                             <li class="dropdownMenuItem"><a style="cursor:pointer" @click="deleteArticle()">
-                                <div class="dropdownMenuLink"><i class="trash alternate icon"></i><span>삭제</span></div>
+                                <div class="dropdownMenuLink" v-if="post.author.id == user_pk"><i class="trash alternate icon" ></i><span>삭제</span></div>
                             </a>
                             </li>
-                            <li class="dropdownMenuItem"><a style="cursor:pointer">
-                                <div class="dropdownMenuLink" @click="pinPost" v-if="!isPinned"><i class="thumbtack icon" ></i><span>공지 띄우기</span></div>
+                            <li class="dropdownMenuItem" v-if="is_moderator"><a style="cursor:pointer">
+                                <div class="dropdownMenuLink" @click="pinPost" v-if="!isPinned" ><i class="thumbtack icon" ></i><span>공지 띄우기</span></div>
                                 <div class="dropdownMenuLink" @click="pinPost" v-else><i class="thumbtack icon" ></i><span>공지 취소하기</span></div>
 
                             </a>
@@ -45,20 +45,33 @@
         </div>
         <div id="contentWrap">
             <div id="content">{{post.content}}</div>
-            <div id="image"></div>
+            <div id="image" v-if="existence_of_image === true" >
+                <image-view :images = image_list></image-view>
+            </div>
+            <div v-if="existence_of_vote===true">
+                <before-vote v-if="!is_voted"
+                             v-on:vote_submit="voteSubmit()"
+                             :vote="vote_data"
+                             :user_pick="user_pick"></before-vote>
+                <after-vote v-else
+                            :vote="vote_data"></after-vote>
+            </div>
         </div>
 
         <div id="like">
             <div id="updownVote">
                 <div id="upVote">
                     <a>
-                        <img src="../../images/upvote.png" :class="{unvoted: !upVoted, voted: upVoted }" @click="upvote" id="upvotedIcon"/>
+                        <img src="../../images/upvote.png" :class="{unvoted: !upVoted, voted: upVoted }" @click="upvote" style="cursor:pointer" id="upvotedIcon"/>
                         <div id="upvoteCount" >{{upCount}}</div>
                     </a>
                 </div>
                 <div id="downVote">
                     <a>
-                        <img src="../../images/downvote.png" :class="{unvoted: !downVoted, voted: downVoted }" @click="downvote" id="downvotedIcon">
+                        <img src="../../images/downvote.png"
+                             :class="{unvoted: !downVoted, voted: downVoted }"
+                             @click="downvote"
+                             id="downvotedIcon">
                         <div id="downvoteCount">{{downCount}}</div>
                     </a>
                 </div>
@@ -69,7 +82,9 @@
 
 <script>
     import axios from 'axios'
-
+    import BeforeVote from './BeforeVote'
+    import AfterVote from './AfterVote'
+    import ImageView from './ImageView'
     export default {
         name: "Article",
         data() {
@@ -86,14 +101,31 @@
                 downVoted: false,
                 downCount: 0,
                 isPinned: false,
+                is_moderator: false,
                 submission_date: [],
-                submission_time: []
+                submission_time: [],
+                vote_data: '',
+                is_voted: false, // 투표 여부
+                existence_of_vote: false,
+                existence_of_image: false,
+                vote_result: null,
+                user_pick: [],
+                voting_exists: false,
+                load : false,
+                image_list: [],
+                vote_page: 1,
+                vote_page_end: false,
             }
+        },
+        components:{
+            'before-vote': BeforeVote,
+            'after-vote': AfterVote,
+            'image-view': ImageView,
         },
         created() {
             axios.get('post/' + this.postID + '/')
                 .then((response) => {
-                    console.log("id", response.data);
+                    console.log(response);
                     this.post = response.data;
                     this.username = response.data.author.username;
                     this.upCount = response.data.likes;
@@ -105,24 +137,61 @@
                     this.upCount = response.data.likes_count;
                     this.downCount = response.data.dislikes_count;
 
+                    for(var i=0;i<response.data.channel.moderators.length;i++){
+                        if(response.data.channel.moderators[i] == this.user_pk){
+                            this.is_moderator = true;
+                            break;
+                        }
+                    }
+
                     for(var i=0; i<response.data.likes_count; i++){
-                        if(response.data.likes[i].id == this.user_pk){
+                        if(response.data.likes[i] == this.user_pk){
                             this.upVoted = true;
                             break;
                         }
                     }
                     if(this.upVoted == false){
                         for(var i=0; i<response.data.dislikes_count; i++){
-                            if(response.data.dislikes[i].id == this.user_pk){
+                            if(response.data.dislikes[i] == this.user_pk){
                                 this.downVoted = true;
                                 break;
                             }
                         }
                     }
 
+                    if(response.data.vote.length !== 0){
+                        this.vote_data = response.data.vote[0];
+                        this.existence_of_vote = true;
+                        for(let i = 0;i<this.vote_data.choices.length;i++){
+                            this.vote_page_end = false;
 
-
+                                    axios.get('addon/vote/' + this.vote_data.id + '/' + this.vote_data.choices[i].id + '/responder/?page=' + this.vote_page)
+                                        .then((response) => {
+                                            if (response.data.results.find(c => c.id == this.user_pk)) {
+                                                this.is_voted = true;
+                                                this.vote_page_end = true;
+                                            }
+                                            else {
+                                                if (response.data.next == null) {
+                                                    this.vote_page = 0;
+                                                    this.vote_page_end = true;
+                                                }
+                                                else {
+                                                    this.vote_page++;
+                                                }
+                                            }
+                                        })
+                        }
+                    }
+                    if(response.data.image.length !== 0){
+                        this.image_list = response.data.image;
+                        this.existence_of_image = true;
+                        console.log(this.image_list);
+                    }
+                    this.load = true;
                 })
+
+
         },
         methods: {
             deleteArticle(){
@@ -131,15 +200,16 @@
                         this.$router.push('/'+this.channelID);
                     })
             },
-
+            voteSubmit(){
+                console.log("hi");
+                this.is_voted = true;
+            },
             upvote() {
-
                 if (this.downVoted == true){
                     axios.delete('post/' + this.postID + '/dislike/')
                         .then(()=>{
                             this.downCount --;
                         })
-
                 }
                 if(this.upVoted == false) {
                     axios.post('post/' + this.postID + '/like/')
@@ -476,6 +546,9 @@
             display: inline-block;
             float: left;
             line-height: 35px;
+        }
+        #image{
+            width: 100%;
         }
     }
 </style>

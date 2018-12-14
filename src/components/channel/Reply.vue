@@ -1,8 +1,8 @@
 <template>
     <div id="ReplyWrap">
         <div id="showButton" >
-            <a class="replyButton" @click="showReply()" v-if="hide===false">답글 보기</a>
-            <a class="replyButton" @click="showReply()" v-else>답글 숨기기</a>
+            <a class="replyButton" style="cursor:pointer" @click="showReply()" v-if="hide===false">답글 보기</a>
+            <a class="replyButton" style="cursor:pointer" @click="showReply()" v-else>답글 숨기기</a>
         </div>
         <div id="reply" v-if="hide===true">
                 <ul>
@@ -30,7 +30,7 @@
                 </ul>
             <div id="replyField">
                 <textarea-autosize id="replyInput" v-model="reply_input"  placeholder="답글을 입력하세요."></textarea-autosize>
-                <button id="replySubmit" type="button" @click="replyComment()">
+                <button id="replySubmit" type="button" @click="replyComment()" style="cursor:pointer">
                     <i class="paper plane outline icon"></i>
                 </button>
             </div>
@@ -57,6 +57,7 @@
                 writer: [],
                 reply_submission_date: [],
                 reply_submission_time: [],
+                reply_page: 1,
                 comments: [],
                 user_pk: localStorage.getItem("user_pk"),
             }
@@ -67,12 +68,12 @@
         methods:{
             getComment(){
                 this.reply_list=[];
-                axios.get('comment/?post='+this.postID+'&parent='+this.parent)
+                axios.get('comment/?post='+this.postID+'&parent='+this.parent+'&page='+this.reply_page)
                     .then((response)=>{
-                        this.reply_list = response.data;
-                        for(var i=0; i<response.data.length; i++){
-                            this.reply_submission_date.push(response.data[i].created_at.split('T')[0].replace(/-/g, "."));
-                            this.reply_submission_time.push(response.data[i].created_at.split('T')[1].split('.')[0]);
+                        this.reply_list = response.data.results;
+                        for(var i=0; i<response.data.results.length; i++){
+                            this.reply_submission_date.push(response.data.results[i].created_at.split('T')[0].replace(/-/g, "."));
+                            this.reply_submission_time.push(response.data.results[i].created_at.split('T')[1].split('.')[0]);
                         }
                     })
             },
@@ -149,6 +150,10 @@
         list-style: none;
     }
 
+    button:focus {
+        outline: none;
+    }
+
     #showButton {
         height: 15px;
         font-size: 11px;
@@ -207,7 +212,7 @@
     }
 
     #replyDate {
-        width: 93px; height: 15px;
+        width: auto; height: 15px;
         margin-left: 10px;
         font-size: 11px;
         font-weight: bold;

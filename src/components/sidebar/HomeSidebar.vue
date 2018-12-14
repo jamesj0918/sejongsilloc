@@ -8,7 +8,7 @@
                 <router-link tag="button" to="/subscription" style="cursor:pointer" type="button" name="button">내가 구독한 실록</router-link>
             </div>
             <div class="buttonWrap">
-                <button style="cursor:pointer" type="button" name="button">프로필 수정</button>
+                <router-link tag="button" to="/editprofile" style="cursor:pointer" type="button" name="button">프로필 수정</router-link>
             </div>
             <div class="buttonWrap">
                 <router-link tag="button" to="/createchannel" style="cursor:pointer" type="button" name="button">실록 생성</router-link>
@@ -34,6 +34,7 @@
     *{
         margin: 0;
         padding: 0;
+        cursor: default;
     }
 
     #homeSidebarWrap {

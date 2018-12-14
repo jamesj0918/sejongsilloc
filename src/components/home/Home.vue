@@ -1,36 +1,38 @@
 <template>
-    <div id="HomeWrap">
-        <div id="postList" v-if="!empty">
-            <ul>
-                <li v-for = "Post in posts" class="post">
-                    <div class="postWrap">
-                        <div class="postHeader">
-                            <span class="name">
-                                {{Post.author.username}}
-                            </span>
-                            <span class="tag">
-                                #{{Post.channel.name}}
-                            </span>
+    <div id="Home">
+        <div id="HomeWrap">
+            <div id="postList" v-if="!empty" class="home-post-list">
+                <ul>
+                    <li v-for = "Post in posts" class="post">
+                        <div class="postWrap">
+                            <div class="postHeader">
+                                <span class="name">
+                                    {{Post.author.username}}
+                                </span>
+                                <span class="tag">
+                                    #{{Post.channel.name}}
+                                </span>
+                            </div>
+                            <div class="postBody">
+                                <span class="title" v-on:click="postView(Post.id, Post.channel.slug)"  >
+                                    <h4 style="cursor:pointer">{{Post.title}}</h4>
+                                    <i v-if="Post.pinned" id="pinned" class="thumbtack icon"></i>
+                                </span>
+                            </div>
+                            <div class="postMenu">
+                                <i class="comment icon" ></i>
+                                {{Post.comments}} &emsp;
+                                <i class="heart outline icon"  v-if="!Post.heart"></i>
+                                <i class="heart red icon"  v-else></i>
+                                {{Post.likes_count-Post.dislikes_count}}
+                            </div>
                         </div>
-                        <div class="postBody">
-                            <span class="title" v-on:click="postView(Post.id, Post.channel.slug)"  style="cursor:pointer">
-                                <h4>{{Post.title}}</h4>
-                                <i v-if="Post.pinned" id="pinned" class="thumbtack icon"></i>
-                            </span>
-                        </div>
-                        <div class="postMenu">
-                            <i class="comment icon" ></i>
-                            {{Post.comments}} &emsp;
-                            <i class="heart outline icon"  v-if="!Post.heart"></i>
-                            <i class="heart red icon"  v-else></i>
-                            {{Post.likes_count-Post.dislikes_count}}
-                        </div>
-                    </div>
-                </li>
-            </ul>
-        </div>
-        <div id="noArticle" v-else>
-            <h3>빈 실록입니다!</h3>
+                    </li>
+                </ul>
+            </div>
+            <div id="noArticle" v-else>
+                <h3>{{alert}}</h3>
+            </div>
         </div>
     </div>
 </template>
@@ -51,6 +53,8 @@
                 pinned_post: [],
                 empty: true,
                 channel_id: this.$route.params.channelID,
+                page: 1,
+                alert: '불러오는 중...',
             }
         },
         methods:{
@@ -59,23 +63,32 @@
             },
             postView(post_pk, channel_pk){
                 this.$router.push(channel_pk+"/"+post_pk);
+            },
+            get_data(){
+                axios.get('post/?subscribed=1&ordering=-created_at&page='+this.page)
+                    .then((response)=> {
+                        if(response.data.results.length == 0) {
+                            this.alert="게시글이 없습니다.";
+                            return;
+                        }
+                        this.empty = false;
+
+                        for(let i = 0;i<response.data.results.length;i++){
+                            this.posts.push(response.data.results[i]);
+                        }
+                        this.page++;
+                    })
             }
         },
         mounted(){
-            axios.get('post/?subscribed=1/')
-                .then((response)=> {
-                    if(response.data.length == 0) return;
-                    this.empty = false;
+            const listElm1 = document.querySelector('#Home');
+            listElm1.addEventListener( 'scroll',e =>{
+                if(listElm1.scrollTop + listElm1.clientHeight >= listElm1.scrollHeight) {
+                    this.get_data();
+                }
+            });
+            this.get_data();
 
-                    for(var i = 0;i<response.data.length;i++){
-
-
-                                this.posts.push(response.data[i]);
-
-
-                    }
-
-                })
         }
     }
 </script>
@@ -85,11 +98,29 @@
     * {
         margin: 0;
         padding: 0;
+        cursor: default;
         font-family: "Noto Sans KR";
+    }
+
+    ul {
+        list-style: none;
     }
 
     button:focus {
         outline: none;
+    }
+
+    h4{
+        display: inline-block;
+    }
+
+    #Home {
+        width: 100%; height: 92vh;
+        overflow-y: scroll;
+    }
+
+    #HomeWrap {
+        width: 100%; height: auto;
     }
 
     #pinned {
@@ -143,5 +174,10 @@
     .postMenu {
         font-size: 12px;
         color: rgba(89, 89, 89, 0.8);
+    }
+
+    #noArticle {
+        text-align: center;
+        margin-top: 10px;
     }
 </style>

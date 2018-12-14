@@ -7,15 +7,20 @@
             <div id="inputWrapper">
                 <form @submit.prevent="submit()" method = "post">
                     <div id="titleWrapper">
-                        <input id="inputTitle" placeholder="제목을 입력해주세요" type="text" v-model="Post.title"/>
+                        <input id="inputTitle" placeholder="제목을 입력해주세요." type="text" v-model="Post.title"/>
                     </div>
                     <div id="contentWrapper">
-                        <textarea id="inputContent" placeholder="무슨 생각을 하고 있나요?" type="text" v-model="Post.content"></textarea>
+                        <div id="inputContentWrap">
+                            <textarea-autosize id="inputContent" placeholder="무슨 생각을 하고 있나요?" v-model="Post.content"></textarea-autosize>
+                            <vote-create v-if="vote===true" :bus="bus" :post_pk="post_pk"></vote-create>
+                            <upload-image v-if="image===true" :bus="bus" :post_pk="post_pk"></upload-image>
+
+                        </div>
                         <div id="articleInputMenu">
-                            <span id="addVote"><i class="archive icon"></i></span>
+                            <span id="addVote" @click="showVote()"><i class="archive icon" style="cursor:pointer"></i></span>
                             <span id="addVideo"><i class="video icon"></i></span>
-                            <span id="addPhoto"><i class="camera icon"></i></span>
-                            <span id="toPinned">
+                            <span id="addPhoto" @click="image=!image"><i class="camera icon"></i></span>
+                            <span v-if="is_moderator === true" id="toPinned">
                                 <a style="cursor:pointer" v-on:click="Post.is_pinned=!Post.is_pinned">
                                     <i class="thumbtack icon" :class="{'Pinned' : Post.is_pinned}"></i>
                                     <span id="toPin" v-show="!Post.is_pinned">공지 띄우기</span>
@@ -24,7 +29,7 @@
                             </span>
                         </div>
                     </div>
-                    <button id="submitButton" type="submit">기록하기</button>
+                    <button id="submitButton" type="submit" style="cursor:pointer">기록하기</button>
                 </form>
             </div>
         </div>
@@ -32,6 +37,9 @@
 
 <script>
     import axios from 'axios'
+    import Vue from 'vue'
+    import VoteCreate from './VoteCreate'
+    import UploadImage from './UploadImage'
     export default {
         name: "WritingPost",
         data(){
@@ -41,10 +49,20 @@
                     content: "",
                     is_pinned: false,
                 },
+                user_pk: localStorage.getItem("user_pk"),
                 channel_pk: '',
                 channel_id: this.$route.params.channelID,
-                channelName: ""
+                channelName: "",
+                vote: false,
+                bus: new Vue(),
+                post_pk: null,
+                is_moderator: false,
+                image: false,
             }
+        },
+        components:{
+            'vote-create': VoteCreate,
+            'upload-image': UploadImage,
         },
         methods: {
             submit(){
@@ -62,10 +80,21 @@
                 }
                 else {
                     axios.post('/post/', post_data)
-                        .then(() => {
+                        .then((response) => {
                             this.$router.push('/' + this.channel_id);
+
+                            this.post_pk = response.data.id;
+                            if (this.vote === true){
+                                this.$bus.$emit('createVote',response.data.id);
+                            }
+                            if (this.image === true){
+                                this.bus.$emit('createImage', response.data.id);
+                            }
                         })
                 }
+            },
+            showVote(){
+                this.vote = true;
             }
         },
         mounted() {
@@ -73,6 +102,12 @@
                 .then((response) => {
                     this.channelName=response.data.name;
                     this.channel_pk = response.data.id;
+                    for(let i=0;i<response.data.moderators.length;i++){
+                        if(response.data.moderators[i].id == this.user_pk){
+                            this.is_moderator = true;
+                            break;
+                        }
+                    }
                 })
         }
     }
@@ -82,7 +117,6 @@
     * {
         margin: 0;
         padding: 0;
-        font-family: "Noto Sans KR";
     }
 
     a {
@@ -193,9 +227,14 @@
         border-width: 2px;
     }
 
-    #inputContent{
+    #inputContentWrap{
         width: 100%; height: calc(100% - 30px);
         font-size: 14px;
+        overflow-y: scroll;
+    }
+
+    #inputContent {
+        width: 100%;
     }
 
     #articleInputMenu{
@@ -238,9 +277,6 @@
         font-weight: bold;
     }
 
-    .Pinned {
-        color: #9e9e9e;
-    }
 
     #toUnpin {
         margin-right: 14px;

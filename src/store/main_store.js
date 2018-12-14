@@ -8,6 +8,7 @@ import axios from 'axios'
 
 Vue.use(Vuex)
 
+Vue.prototype.$bus = new Vue();
 
 const main_store = new Vuex.Store({
     modules: {

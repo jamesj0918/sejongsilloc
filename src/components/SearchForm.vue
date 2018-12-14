@@ -9,27 +9,13 @@
                     </div>
                 </div>
                 <div id="menuToggle" style="cursor:pointer" @click="openNav()">
-
                     <i class="bars white big icon"></i>
                 </div>
             </div>
-            <!--
-            <div id="home_button_web">
-              <i id="web" @click="link_home" style="cursor:pointer" class="home white inverted big icon"></i>
-                <button type="button" v-on:click="logout">로그아웃</button>
-            </div>
-            -->
-            <div id="searchDiv">
-                <input id="search" type="text" placeholder="검색할 내용을 입력하세요.">
-                <div id="searchIconWrapper">
-                    <router-link to="/search"><i class="search icon"></i></router-link>
-                    </div>
-            </div>
-            <!--
-            <div id="homebtmb">
-              <i id="mb" @click="link_home" style="cursor:pointer" class="home white inverted big icon"></i>
-            </div>
-            -->
+            <form id="searchDiv" @submit.prevent="search(search_data)">
+                <input id="search" v-model="search_data" type="text" placeholder="검색할 내용을 입력하세요.">
+                <div id="searchIconWrapper"><button id="search_submit" type="submit" style="cursor:pointer"><i class="white search icon"></i></button></div>
+            </form>
         </div>
     </div>
 </template>
@@ -37,6 +23,11 @@
 
 <script>
     export default {
+        data(){
+            return{
+                search_data : ''
+            }
+        },
         methods: {
             link_home() {
                 this.$router.push('/');
@@ -49,6 +40,11 @@
             },
             openNav(){
                 this.$store.dispatch('OPEN_SIDEBAR')
+            },
+            search(search_data){
+                this.search_data = '';
+                location.reload();
+                this.$router.push({path: '/search', query : {search_data : search_data}});
             }
         }
     }
@@ -74,6 +70,21 @@
         background-color: #8c151f;
     }
 
+    button {
+        text-decoration: none;
+        outline: none;
+        color: rgba(255, 255, 255, 0.5);
+    }
+
+    button:hover {
+        color: rgba(255, 255, 255, 1);
+        outline: none;
+    }
+
+    button:focus {
+        outline: none;
+    }
+
     #marginTop {
         height: calc((100% - 35px) / 2);
     }
@@ -91,6 +102,11 @@
         height: calc(100% - (100% - 35px) / 2);
         width: 80%;
         margin: 0 auto;
+    }
+
+    #search_submit {
+        background: none;
+        border: none;
     }
 
     #homeMenuBtn {
@@ -149,7 +165,12 @@
         font-size: 14px;
         outline: none;
     }
-
+    @media all and (max-width:1024px) {
+        #searchDiv {
+            width: 320px;
+            margin-left: calc((100% - 320px) / 2 - 20%);
+        }
+    }
     /* 모바일 (해상도 640px 이하) */
     @media all and (max-width:640px) {
 
@@ -186,7 +207,7 @@
 
         #searchDiv {
             width: 60%;
-            margin-left: calc((100% - 35px) / 2);
+            margin-left: calc(20% - 35px);
         }
     }
 </style>

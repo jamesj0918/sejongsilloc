@@ -7,10 +7,17 @@ import VueAxios from 'vue-axios'
 import SuiVue from 'semantic-ui-vue'
 import '../semantic/dist/semantic.min.css'
 import VueTextareaAutosize from 'vue-textarea-autosize'
+import VueTabs from 'vue-nav-tabs'
+import 'vue-nav-tabs/themes/vue-tabs.css'
+import Vue2Filters from 'vue2-filters'
+import  VueLazyLoad from 'vue-lazyload'
 
 Vue.use(VueAxios, axios);
 Vue.use(SuiVue);
 Vue.use(VueTextareaAutosize);
+Vue.use(Vue2Filters);
+Vue.use(VueTabs);
+Vue.use(VueLazyLoad);
 
 Vue.config.productionTip = false;
 
@@ -27,7 +34,7 @@ if (localStorage.getItem("token")){
             axios.defaults.headers.common = {
                 "Content-Type": "application/json",
                 "Authorization": "JWT " + localStorage.getItem("token")
-            }
+            };
         })
         .catch(() => {
             localStorage.removeItem("token");

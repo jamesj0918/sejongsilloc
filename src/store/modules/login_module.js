@@ -28,7 +28,6 @@ const actions = {
                         }
                     })
                     .then((response) => {
-                        console.log(response);
                         localStorage.setItem("token", data.token);
                         localStorage.setItem("user_pk", response.data.id);
                         router.push('/');

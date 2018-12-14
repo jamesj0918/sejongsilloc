@@ -14,65 +14,65 @@
                 ></sui-dropdown>
             </div>
         </div>
-        <div id="postList" v-if="!empty">
-            <ul>
-                <li v-for = "Post in pinned_post" class="post">
-                    <div class="postWrap">
-                        <div class="postHeader">
-                            <span class="name">
-                                {{Post.author.username}}
-                            </span>
-                            <span class="tag">
-                                #{{Post.channel.name}}
-                            </span>
+            <div id="postList" v-if="!empty">
+                <ul>
+                    <li v-for = "Post in pinned_post" class="post">
+                        <div class="postWrap">
+                            <div class="postHeader">
+                                <span class="name">
+                                    {{Post.author.username}}
+                                </span>
+                                <span class="tag">
+                                    #{{Post.channel.name}}
+                                </span>
+                            </div>
+                            <div class="postBody">
+                                <span class="title" v-on:click="postView(Post.id)"  style="cursor:pointer">
+                                    <h4>{{Post.title}}</h4>
+                                </span>
+                            </div>
+                            <div class="postMenu">
+                                <i class="comment icon" ></i>
+                                {{Post.comments}} &emsp;
+                                <i class="heart outline icon"  v-if="!Post.heart"></i>
+                                <i class="heart red icon"  v-else></i>
+                                {{Post.likes_count-Post.dislikes_count}}
+                            </div>
                         </div>
-                        <div class="postBody">
-                            <span class="title" v-on:click="postView(Post.id)"  style="cursor:pointer">
-                                <h4>{{Post.title}}</h4>
-                            </span>
+                    </li>
+                </ul>
+                <div class="ui horizontal divider" v-if="pinned_post.length !== 0">
+                    공지
+                </div>
+                <ul>
+                    <li v-for = "Post in posts" class="post">
+                        <div class="postWrap">
+                            <div class="postHeader">
+                                <span class="name">
+                                    {{Post.author.username}}
+                                </span>
+                                <span class="tag">
+                                    #{{Post.channel.name}}
+                                </span>
+                            </div>
+                            <div class="postBody">
+                                <span class="title" v-on:click="postView(Post.id)"  style="cursor:pointer">
+                                    <h4>{{Post.title}}</h4>
+                                </span>
+                            </div>
+                            <div class="postMenu">
+                                <i class="comment icon" ></i>
+                                {{Post.comments}} &emsp;
+                                <i class="heart outline icon"  v-if="!Post.heart"></i>
+                                <i class="heart red icon"  v-else></i>
+                                {{Post.likes_count-Post.dislikes_count}}
+                            </div>
                         </div>
-                        <div class="postMenu">
-                            <i class="comment icon" ></i>
-                            {{Post.comments}} &emsp;
-                            <i class="heart outline icon"  v-if="!Post.heart"></i>
-                            <i class="heart red icon"  v-else></i>
-                            {{Post.likes_count-Post.dislikes_count}}
-                        </div>
-                    </div>
-                </li>
-            </ul>
-            <div class="ui horizontal divider" v-if="pinned_post.length !== 0">
-                공지
+                    </li>
+                </ul>
             </div>
-            <ul>
-                <li v-for = "Post in posts" class="post">
-                    <div class="postWrap">
-                        <div class="postHeader">
-                            <span class="name">
-                                {{Post.author.username}}
-                            </span>
-                            <span class="tag">
-                                #{{Post.channel.name}}
-                            </span>
-                        </div>
-                        <div class="postBody">
-                            <span class="title" v-on:click="postView(Post.id)"  style="cursor:pointer">
-                                <h4>{{Post.title}}</h4>
-                            </span>
-                        </div>
-                        <div class="postMenu">
-                            <i class="comment icon" ></i>
-                            {{Post.comments}} &emsp;
-                            <i class="heart outline icon"  v-if="!Post.heart"></i>
-                            <i class="heart red icon"  v-else></i>
-                            {{Post.likes_count-Post.dislikes_count}}
-                        </div>
-                    </div>
-                </li>
-            </ul>
-        </div>
         <div id="noArticle" v-else>
-            <h3>빈 실록입니다!</h3>
+            <h3>{{answer}}</h3>
         </div>
     </div>
 </template>
@@ -84,15 +84,16 @@
         data(){
             return{
                 sort: [
-                    {key: 'fav', value: 'fav', text:'인기'},
-                    {key: 'com', value: 'com', text:'댓글'},
+                    {key: 'fav', value: 'fav', text:'화제'},
                     {key: 'new', value: 'new', text:'최신'},
                 ],
-                current: 'fav',
+                answer: '불러오는 중...',
+                current: 'new',
                 posts: [],
                 pinned_post: [],
                 empty: true,
                 channel_id: this.$route.params.channelID,
+                page: 1,
             }
         },
         methods:{
@@ -101,28 +102,63 @@
             },
             postView(object){
                 this.$router.push(this.channel_id+"/"+object);
+            },
+            get_data(){
+
+                if(this.current === 'fav'){
+                    axios.get('post/?slug='+this.channel_id+'&page='+this.page+'&ordering=-score')
+                        .then((response)=> {
+                            if(response.data.results.length == 0 && this.page==1) {
+                                this.answer = '빈 실록입니다.';
+                                return;
+                            }
+                            this.empty = false;
+
+                            for(let i = 0; i<response.data.results.length; i++){
+                                this.posts.push(response.data.results[i])
+                            }
+                            this.page++;
+
+                        })
+                }
+                if(this.current === 'new'){
+                    axios.get('post/?ordering=-created_at&slug='+this.channel_id+'&page='+this.page)
+                        .then((response)=> {
+                            if(response.data.results.length == 0 && this.page==1) {
+                                this.answer = '빈 실록입니다.';
+                                return;
+                            }
+                            console.log(response);
+                            this.empty = false;
+
+                            for(let i = 0; i<response.data.results.length; i++){
+                                this.posts.push(response.data.results[i])
+                            }
+                            this.page++;
+
+                        })
+                }
+
+            }
+        },
+        watch:{
+            current: function(){
+                this.empty = true;
+                this.posts=[];
+                this.page=1;
+                this.get_data();
             }
         },
         mounted(){
-            axios.get('post/')
-                .then((response)=> {
-                    console.log("hi",response);
-                    if(response.data.length == 0) return;
-                    this.empty = false;
 
-                    for(var i = 0;i<response.data.length;i++){
-                        if(this.channel_id == response.data[i].channel.slug){
-                            if(response.data[i].pinned == true){
-                                this.pinned_post.push(response.data[i])
+            const listElm1 = document.querySelector('#ChannelWrap');
+            listElm1.addEventListener( 'scroll',e =>{
+                if(listElm1.scrollTop + listElm1.clientHeight >= listElm1.scrollHeight) {
+                    this.get_data();
+                }
+            });
 
-                            }
-                            else{
-                                this.posts.push(response.data[i]);
-                            }
-                        }
-                    }
-
-                })
+            this.get_data();
         }
     }
 </script>
@@ -134,12 +170,17 @@
         font-family: "Noto Sans KR";
     }
 
+    ul {
+        list-style: none;
+    }
+
     button:focus {
         outline: none;
     }
 
     #ChannelWrap {
-        width: 100%; height: 100%;
+        width: 100%; height: 92vh;
+        overflow-y: hidden;
     }
 
     #top {
@@ -174,10 +215,16 @@
         width: 44px; height: 28px;
         display: inline-block;
         float: left;
+        z-index: 1000;
     }
 
     #sort {
         float: right;
+    }
+
+    #postList {
+        width: 100%; height: calc(92vh - 28px - 2%);
+        overflow-y: scroll;
     }
 
     .postWrap {
@@ -221,5 +268,10 @@
     .postMenu {
         font-size: 12px;
         color: rgba(89, 89, 89, 0.8);
+    }
+
+    #noArticle {
+        text-align: center;
+        margin-top: 10px;
     }
 </style>

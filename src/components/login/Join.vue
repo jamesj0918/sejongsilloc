@@ -37,13 +37,11 @@
                 };
                 axios.post('user/signup/', user_data)
                     .then(response => {
-                        console.log(response);
                         if (response.status === 201) {
                             this.$router.push('/login')
                         }
                     })
                     .catch((error) => {
-                        console.log(error.response);
                         if (error.response.email == "user with this email already exists.") alert('이 이메일은 이미 사용중입니다.');
                         else if(error.resonse.password == "This field may not be blank.") alert('비밀번호를 입력해주세요.');
                         else if (error.response.password == "Ensure this field has at least 8 characters.") alert('비밀번호는 최소 8글자부터 사용가능합니다.');

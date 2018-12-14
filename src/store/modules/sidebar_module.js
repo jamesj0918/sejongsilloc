@@ -8,7 +8,7 @@ const state = {
 
 const mutations = {
     SET_SIDEBAR(state,path){
-        if(path === '/' || path === '/subscription' || path === '/createchannel'){
+        if(path === '/' || path === '/subscription' || path === '/createchannel' || path === '/search'){
             state.home = true;
         }
         else{
