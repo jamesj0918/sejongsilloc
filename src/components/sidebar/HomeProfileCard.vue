@@ -15,7 +15,7 @@
             </div>
             <div id="informationContainer">
                 <div id="usernameWrap"><h3 id="username"> {{username}}</h3></div>
-                <div id="followerWrap"><h4 id="follower">{{followers}}명의 팔로워</h4></div>
+                <div id="followerWrap"><h5 id="follower">{{bio}}</h5></div>
             </div>
         </div>
         <LightBox ref="wallpaper" :show-light-box="false" :images="wallpaper"></LightBox>
@@ -39,24 +39,27 @@
               icon_url: '',
               wallpaper_url: '',
               wallpaper:[],
-              icon:[]
+              icon:[],
+              bio:'',
             }
         },
         mounted(){
             axios.get('profile/')
             .then((response)=>{
-                console.log(response);
                 const base_url = 'https://sejongapi-v2.herokuapp.com';
-                const icon_url = base_url + response.data.icon.image;
-                const wallpaper_url = base_url + response.data.wallpaper.image;
+                if(response.data.icon!== null){
+                    this.icon_url = base_url + response.data.icon.image;
+                }
+                if(response.data.wallpaper!== null){
+                    this.wallpaper_url = base_url + response.data.wallpaper.image;
+                }
+
 
                 this.username = response.data.username;
                 this.followers = response.data.followed_by;
-                this.icon_url = icon_url;
-                this.wallpaper_url = wallpaper_url;
-
-                this.icon.push({src: icon_url, thumb: icon_url});
-                this.wallpaper.push({src: wallpaper_url, thumb: wallpaper_url});
+                this.bio = response.data.bio;
+                this.icon.push({src: this.icon_url, thumb: this.icon_url});
+                this.wallpaper.push({src: this.wallpaper_url, thumb: this.wallpaper_url});
             });
         },
         methods:{

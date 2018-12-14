@@ -2,16 +2,16 @@
     <div id="VoteCreate">
         <div id="voteCreateHeader">
             <div id="voteCreateTitle" class="contentTitle"><h4>투표 제목</h4></div>
-            <input id="voteTitleInput" placeholder="투표 제목을 입력해주세요." v-model="title" style="cursor: text"/>
+            <input id="voteTitleInput" placeholder="투표 제목을 입력해주세요." v-model="vote_patch_data.title" style="cursor: text"/>
         </div>
         <div id="voteDescription">
-            <div id="voteDescriptionTitle" class="contentTitle"><h4>투표 설명</h4></div>
-            <input id="voteDescriptionInput" placeholder="투표 설명을 입력해주세요." v-model="description" style="cursor: text"/>
+            <div id="voteDescriptionTitle" class="contentTitle" v-model="vote_patch_data.description"><h4>투표 설명</h4></div>
+            <input id="voteDescriptionInput" placeholder="투표 설명을 입력해주세요." v-model="vote_patch_data.description" style="cursor: text"/>
         </div>
         <div v-for="(choice, index) in choices" >
             <div id="voteList">
                 {{index+1}}.
-                <input id="voteContentInput" v-model="choice.content" placeholder="선택지를 입력해주세요." style="cursor: text"/>
+                <input id="voteContentInput" v-model="choices[index].content" placeholder="선택지를 입력해주세요." style="cursor: text"/>
                 <i class="circle minus icon" id="minusIcon" @click="minusChoice(index)" style="cursor: pointer"></i>
             </div>
         </div>
@@ -27,19 +27,28 @@
     import axios from 'axios'
     export default {
         name: "VoteCreate",
-        props:['bus','post_pk'],
+        props:['bus','post_pk','vote_data'],
         data() {
             return {
                 choices: [{content: ''}],
                 choice_count: 1,
                 title: '',
                 description: '',
-
                 overlab: false,
+                vote_patch_data: [],
+
             }
         },
         mounted(){
-          this.$bus.$on('createVote', this.createVote);
+          this.bus.$on('patchVote', this.createVote);
+
+            axios.get('post/'+this.post_pk+'/')
+                .then((response)=>{
+                    console.log(response);
+                    this.vote_patch_data = response.data.vote[0];
+                    this.choices = response.data.vote[0].choices;
+                    this.choice_count = response.data.vote[0].choices.length;
+                })
         },
         methods:{
             addChoice(){
@@ -55,25 +64,24 @@
                 this.choice_count--;
                 this.choices.splice(index,1)
             },
-            createVote(post_id){
+            createVote(){
                 console.log("hi createVote");
                 if(this.overlab === false){
                     this.choice_count = 1;
                 }
                 const vote_data={
                     choices: this.choices,
-                    title: this.title,
-                    description: this.description,
+                    title: this.vote_patch_data.title,
+                    description: this.vote_patch_data.description,
                     max_responses: this.choice_count,
                 };
 
                 axios.post('addon/vote/',vote_data)
                     .then((response)=>{
-                        console.log(response);
                         const patch_data={
                             vote: [""+response.data.id],
                         };
-                        axios.patch('post/'+post_id+'/',patch_data)
+                        axios.patch('post/'+this.post_pk+'/',patch_data)
                     })
             }
 

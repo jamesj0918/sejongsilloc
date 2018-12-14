@@ -58,15 +58,16 @@
             axios.get('channel/'+this.id+'/')
             .then((response)=>{
                 const base_url = 'https://sejongapi-v2.herokuapp.com';
-                const icon_url = base_url + response.data.icon.image;
-                const wallpaper_url = base_url + response.data.wallpaper.image;
-
+                if(response.data.icon !== null) {
+                    this.icon_url = base_url + response.data.icon.image;
+                }
+                if(response.data.wallpaper !== null) {
+                    this.wallpaper_url = base_url + response.data.wallpaper.image;
+                }
                 this.channel_info = response.data;
-                this.icon_url = icon_url;
-                this.wallpaper_url = wallpaper_url;
 
-                this.icon.push({src: icon_url, thumb: icon_url});
-                this.wallpaper.push({src: wallpaper_url, thumb: wallpaper_url});
+                this.icon.push({src: this.icon_url, thumb: this.icon_url});
+                this.wallpaper.push({src: this.wallpaper_url, thumb: this.wallpaper_url});
             })
         },
         methods:{

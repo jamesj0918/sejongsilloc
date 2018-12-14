@@ -125,7 +125,6 @@
         created() {
             axios.get('post/' + this.postID + '/')
                 .then((response) => {
-                    console.log(response);
                     this.post = response.data;
                     this.username = response.data.author.username;
                     this.upCount = response.data.likes;

@@ -12,12 +12,12 @@
                     <div id="contentWrapper">
                         <div id="inputContentWrap">
                             <textarea-autosize id="inputContent" placeholder="무슨 생각을 하고 있나요?" v-model="Post.content"></textarea-autosize>
-                            <vote-create v-if="vote===true" :bus="bus" :post_pk="post_pk"></vote-create>
-                            <upload-image v-if="image===true" :bus="bus" :post_pk="post_pk"></upload-image>
-
+                            <vote-create v-show="vote===true" :bus="bus" :post_pk="post_pk"></vote-create>
+                            <upload-image v-show="image===true" :bus="bus" :post_pk="post_pk"></upload-image>
                         </div>
+
                         <div id="articleInputMenu">
-                            <span id="addVote" @click="showVote()"><i class="archive icon" style="cursor:pointer"></i></span>
+                            <span id="addVote" @click="vote = !vote"><i class="archive icon" style="cursor:pointer"></i></span>
                             <span id="addVideo"><i class="video icon"></i></span>
                             <span id="addPhoto" @click="image=!image"><i class="camera icon"></i></span>
                             <span v-if="is_moderator === true" id="toPinned">
@@ -93,9 +93,6 @@
                         })
                 }
             },
-            showVote(){
-                this.vote = true;
-            }
         },
         mounted() {
             axios.get('channel/'+this.channel_id+'/')
@@ -282,6 +279,7 @@
         margin-right: 14px;
         color: #9e9e9e;
     }
+
 
 
     @font-face{

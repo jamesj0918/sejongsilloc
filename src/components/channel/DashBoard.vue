@@ -8,8 +8,7 @@
                     direction="vertical"
                     active-tab-color="darkGray"
                     active-text-color="white"
-                    type="pills"
-                >
+                    type="pills">
                     <v-tab title="프로필 및 배경사진" class="channelMenuList">
                         <div class="contentTitle">
                             <div id="editImg">
@@ -48,7 +47,14 @@
                         <input id="channelDescriptionInput" v-model="channel_description" style="cursor: text">
                     </v-tab>
                     <v-tab title="실록 규칙" class="channelMenuList">
-                        <div class="contentTitle">규칙 (아직 안됨)</div>
+                        <div class="contentTitle" id="ruleTitle"><h4>실록 규칙</h4></div>
+                            <div v-for="(rule, id) in rules">
+                                <input class="inputRule" type="text" v-model="rules[id].content"  placeholder="규칙을 입력해주세요." style="cursor: text">
+                                <div id="deleteBtnWrap">
+                                    <div id="deleteBtn1"><a id="btnInner" @click="removeElement(id)" style="cursor: pointer">삭제</a></div>
+                                </div>
+                            </div>
+                        <div id="addBtn" v-if="this.rules.length!==5"><a @click="addRow()" style="cursor: pointer" >추가</a></div>
                     </v-tab>
                 </vue-tabs>
             </div>
@@ -58,8 +64,7 @@
                     direction="vertical"
                     active-tab-color="darkGray"
                     active-text-color="white"
-                    type="pills"
-                >
+                    type="pills">
                     <v-tab title="구독자 목록" class="subscriberMenuList">
                         <div v-if="channel_subscribers.length === 0">
                             <div class="noData">구독자가 없어용 ㅎㅎ 너무 아쉽네 ;-;</div>
@@ -125,16 +130,26 @@
                 wallpaper_edited: false,
                 icon_preview: "",
                 wallpaper_preview: "",
+                rules: []
             }
         },
         mounted(){
             axios.get('channel/'+this.$route.params.channelID+'/')
                 .then((response)=>{
+                    console.log(response);
+                    //this.rules = response.data.rules;
                     this.channel_name = response.data.name;
                     this.channel_description = response.data.description;
                     this.channel_subscribers = response.data.subscribers.slice();
                     this.channel_blacklist = response.data.blacklist.slice();
                     this.channel_moderators = response.data.moderators.slice();
+
+                    for(let i=0;i<response.data.rules.length;i++){
+                        this.rules.push({
+                            content: response.data.rules[i]
+                        })
+                    }
+
                 });
         },
         methods: {
@@ -144,7 +159,8 @@
                     description: this.channel_description,
                     subscribers: [],
                     moderators: [],
-                    blacklist: []
+                    blacklist: [],
+                    rules: this.rules,
                 };
                 if (this.icon_edited === true) channel_data.icon = this.icon_pk;
                 if (this.wallpaper_edited === true) channel_data.wallpaper = this.wallpaper_pk;
@@ -155,6 +171,24 @@
                 axios.patch('channel/'+this.$route.params.channelID+'/', channel_data);
                 location.reload();
                 this.$router.replace('/'+this.$route.params.channelID);
+            },
+            removeElement(index){
+                if(this.rules.length>1){
+                    this.rules.splice(index, 1);
+                }
+                else{
+                    alert('규칙을 하나 이상 입력해주세요!');
+                }
+            },
+            addRow: function() {
+                if(this.rules.length<5){
+                    this.rules.push({
+                        content: ""
+                    });
+                }
+                else {
+                    alert('규칙은 최대 5개까지 입력 가능합니다.');
+                }
             },
             delete_from_array(array, id){
                 if (array === this.channel_moderators && array.length === 1) alert('관리자가 최소 1명은 있어야 합니다.');
@@ -220,6 +254,15 @@
         padding: 0;
         cursor: default;
         font-family: "Noto Sans KR";
+    }
+    a {
+        text-decoration: none;
+        color: white;
+    }
+
+    a:hover {
+        text-decoration: none;
+        color: white;
     }
 
     input {
@@ -387,6 +430,47 @@
         width: 100%;
     }
 
+    .inputRule {
+        width: calc(100% - 53px);
+        margin-bottom: 5px;
+    }
+
+    #deleteBtnWrap {
+        width: 50px;
+        display: inline-block;
+        float: right;
+    }
+
+    #deleteBtn {
+        width: 50px; height: auto;
+        text-align: center;
+        padding: 2px;
+        font-size: 11px;
+        font-weight: bold;
+        background-color: white;
+        border-radius: 5px;
+        display: inline-block;
+    }
+
+    #btnInner {
+        color: #8c151f;
+        font-size: 13px;
+        font-weight: bolder;
+    }
+
+    #addBtn {
+        width: 50px; height: auto;
+        text-align: center;
+        margin-top: 0.5%;
+        padding: 2px;
+        font-size: 11px;
+        font-weight: bold;
+        background-color: #8c151f;
+        color: white;
+        border-radius: 5px;
+        display: inline-block;
+    }
+
     #subscriberManaging {
         height: calc(300px + 4vh);
         margin-top: 1.5vh;
@@ -481,6 +565,16 @@
         width: 80px;
         margin-left: 1%;
     }
+    #deleteBtn1 {
+        width: 50px; height: auto;
+        text-align: center;
+        padding: 2px;
+        font-size: 11px;
+        font-weight: bold;
+        background-color: white;
+        border-radius: 5px;
+        display: inline-block;
+    }
 
     #BtnWrap {
         height: 50px;
@@ -490,7 +584,7 @@
         width: 50px;
         margin-top: 3vh;
     }
-    
+
     @media all and (max-width:720px){
         .channelMenuList {
             width: calc(91.18vw - 155px);
