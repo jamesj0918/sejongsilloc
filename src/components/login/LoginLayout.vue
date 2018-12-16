@@ -3,7 +3,9 @@
         <div id="cell">
             <div id="tableDiv">
                 <div class="img">
-                    <router-link to="/login">Logo</router-link>
+                    <router-link to="/login">
+                        <img src="../../images/login_logo.png">
+                    </router-link>
                 </div>
                 <div id="loginDiv">
                     <div id="formwrap">
@@ -71,6 +73,12 @@
         height: 100%;
 
         float: left;
+    }
+
+    img{
+        height: 45%;
+        width: 70%;
+        margin-top: 40%;
     }
 
     #loginDiv{
@@ -238,9 +246,13 @@
         }
         .img{
             display: inline-block;
-            width: 100%;
-            height: 25%;
+            height: 20%;
             float: none;
+        }
+
+        img{
+            margin-top: 0;
+            height: 30%;
         }
 
         .div{

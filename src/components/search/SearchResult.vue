@@ -14,7 +14,11 @@
                     <ul>
                         <li v-for="channel in channels">
                             <div class="resultChannelItem">
-                                <div class="channelImgWrap"><img class="channelImg" :src="channel.icon.image" /></div>
+                                <div class="channelImgWrap">
+                                    <img class="channelImg"  v-if="channel.icon !== null" :src="channel.icon.image" />
+                                    <img v-else class="channelImg" src="../../images/moon.jpg"/>
+
+                                </div>
                                 <div class="channelInfo">
                                     <div class="channelName" @click="gotoChannel(channel.slug)">#{{channel.name}}</div>
                                     <div class="channelDescription">{{channel.description}}</div>
@@ -35,7 +39,7 @@
                             <div class="resultPostItem">
                                 <div class="postTop">
                                     <div class="userImgWrap">
-                                        <img v-if="post.author.icon" class="userImg" :src="post.author.icon.image"/>
+                                        <img v-if="post.author.icon !== null" class="userImg" :src="post.author.icon.image"/>
                                         <img v-else class="userImg" src="../../images/moon.jpg"/>
                                     </div>
                                     <div class="postInfo">

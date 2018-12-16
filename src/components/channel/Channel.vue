@@ -108,14 +108,21 @@
                 if(this.current === 'fav'){
                     axios.get('post/?slug='+this.channel_id+'&page='+this.page+'&ordering=-score')
                         .then((response)=> {
+                            console.log(response);
                             if(response.data.results.length == 0 && this.page==1) {
                                 this.answer = '빈 실록입니다.';
                                 return;
                             }
                             this.empty = false;
 
+
                             for(let i = 0; i<response.data.results.length; i++){
-                                this.posts.push(response.data.results[i])
+                                if(response.data.results[i].pinned == true){
+                                    this.pinned_post.push(response.data.results[i])
+                                }
+                                else{
+                                    this.posts.push(response.data.results[i])
+                                }
                             }
                             this.page++;
 
@@ -131,7 +138,12 @@
                             this.empty = false;
 
                             for(let i = 0; i<response.data.results.length; i++){
-                                this.posts.push(response.data.results[i])
+                                if(response.data.results[i].pinned == true){
+                                    this.pinned_post.push(response.data.results[i])
+                                }
+                                else{
+                                    this.posts.push(response.data.results[i])
+                                }
                             }
                             this.page++;
 
